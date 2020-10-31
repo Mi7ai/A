@@ -11,8 +11,8 @@ para cada vecino hacer un recorrido en profundidad. probar con anchura tambien.
 tener una lista de aristas para anadir los vertices asi tengo en cuenta donde estan las paredes
 """
 Vertex = TypeVar('Vertex')
-f = 10
-c = 10
+f = 4
+c = 4
 
 
 # metodo que genera todos los vertices vecinos de un vertice "u" a los que puede ir
@@ -59,12 +59,13 @@ def generar_aristas_profundidad(u, v):
         # a = sorted(vecinos, key=lambda i: vecinos[i])
         # print(a)
         for i in range(len(random_vecinos)):
-            suc = random_vecinos[random.randint(0, len(random_vecinos)-1)]
+            suc = random_vecinos[random.randint(0, len(random_vecinos) - 1)]
             if suc not in seen:
                 explorar_desde(v, suc)
 
     explorar_desde(v_ini, v_ini)
     return aristas
+
 
 def generar_aristas_profundidad_copy(u, v):
     seen = set()
@@ -87,7 +88,9 @@ def generar_aristas_profundidad_copy(u, v):
 
     explorar_desde(v_ini, v_ini)
     return aristas
-def gernerar_aristas_anchura(v_ini):
+
+
+def generar_aristas_anchura(v_ini):
     q = Fifo()
     seen = set()
     aristas = []
@@ -112,17 +115,27 @@ def gernerar_aristas_anchura(v_ini):
     return aristas
 
 
-def generate(f, c):
-    aristas = []
-    v_ini = (1, 1)
-    aristas.append((v_ini, v_ini))
+def generar_aristas_anchura_copy(v_ini):
+    q = Fifo()
     seen = set()
+    aristas = []
+    random.seed()
 
-    for i in range(f):
-        for j in range(c):
-            x = random.randint(0, f)
-            y = random.randint(0, c)
-            aristas.append((x, y))
+    q.push((v_ini, v_ini))
+    seen.add(v_ini)
+
+    while len(q) > 0:
+        (u, v) = q.pop()
+        aristas.append((u, v))
+
+        vecinos = list(vecinos_vertice(v))
+        random_vecinos = random.sample(vecinos, len(vecinos))
+        # print("Vecinos de{0} {1} y random {2}".format(v,vecinos,random_vecinos))
+        suc = random.choice(random_vecinos)
+        if suc not in seen:
+            seen.add(suc)
+            q.push((v, suc))
+
     return aristas
 
 
@@ -135,10 +148,11 @@ if __name__ == '__main__':
 
     pasillos_profundidad = generar_aristas_profundidad(v_ini, v_ini)
     # pasillos_anchura = gernerar_aristas_anchura(v_ini)
+    pasillos_profundidad_copy = generar_aristas_anchura_copy(v_ini)
 
-    random.seed(3)
 
-    lab = UndirectedGraph(E=pasillos_profundidad)
+    # lab = UndirectedGraph(E=pasillos_profundidad)
     # lab = UndirectedGraph(E=pasillos_anchura)
+    lab = UndirectedGraph(E=pasillos_profundidad_copy)
     lv = LabyrinthViewer(lab, canvas_width=600, canvas_height=400, margin=10)
     lv.run()
