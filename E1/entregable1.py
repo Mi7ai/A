@@ -1,10 +1,11 @@
+import sys
+
 from algoritmia.datastructures.digraphs import UndirectedGraph
 from algoritmia.datastructures.queues import Fifo
 import random
 from labyrinthviewer import LabyrinthViewer
 from typing import *
 from algoritmia.datastructures.mergefindsets import MergeFindSet
-import time
 
 """
 empezar en (0,0)
@@ -15,20 +16,29 @@ tener una lista de aristas para anadir los vertices asi tengo en cuenta donde es
 Vertex = TypeVar('Vertex')
 f = 2
 c = 2
+filename = sys.argv[1]
 
 
 def load_file(filename):
-    data = []
+    aristas = []
+
     try:
         f = open(filename, "r")
         filas, columnas = f.readline().split(" ")
-        print(filas, columnas)
-        (int(filas), int(columnas))
 
+        paredes = f.readline()
+
+        for line in f:
+            x1, y1, x2, y2 = line.split(" ")
+            vertice1 = (int(x1), int(y1))
+            vertice2 = (int(x2), int(y2))
+            arista = (vertice1, vertice2)
+
+            aristas.append(arista)
     except IOError:
         print("File cannot be open!")
 
-    return None
+    return int(filas), int(columnas), int(paredes), aristas
 
 
 def create_labyrinth(rows, cols):
@@ -39,7 +49,6 @@ def create_labyrinth(rows, cols):
     edges = []
 
     for v in vertices:
-        # print(v)
         mfs.add(v)
 
     # add the bottom row and right column to edge list and shuffle it
@@ -154,6 +163,9 @@ if __name__ == '__main__':
     # lab = UndirectedGraph(E=pasillos_profundidad)
     # lab = UndirectedGraph(E=pasillos_profundidad_copy)
     # lab = UndirectedGraph(E=pasillos_anchura)
-    lab = create_labyrinth(10, 10)
+
+    filas, columnas, paredes, aristas_p = load_file(filename)
+
+    lab = create_labyrinth(filas, columnas)
     lv = LabyrinthViewer(lab, canvas_width=600, canvas_height=400, margin=10)
     lv.run()
