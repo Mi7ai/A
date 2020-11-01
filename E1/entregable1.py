@@ -6,6 +6,7 @@ import random
 from labyrinthviewer import LabyrinthViewer
 from typing import *
 from algoritmia.datastructures.mergefindsets import MergeFindSet
+import time
 
 """
 empezar en (0,0)
@@ -60,32 +61,38 @@ def create_labyrinth(rows, cols):
     random.shuffle(edges)
 
     corridors = []
-    np = []
+    paredes_invalidas = 0
+
     # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
         if (u, v) not in aristas_p:
             if mfs.find(u) != mfs.find(v):
                 mfs.merge(u, v)
                 corridors.append((u, v))
-        # else:
-        #     np.append((u,v))
+        else:
+            paredes_invalidas += 1
 
     # print(len(np))
     # for u, v in corridors:
     #     print("Path: {} {}".format(u, v))
-    return corridors,UndirectedGraph(E=corridors)
+    return corridors, paredes_invalidas, UndirectedGraph(E=corridors)
 
 
 if __name__ == '__main__':
     filas, columnas, paredes, aristas_p = load_file(filename)
+    # ---
 
-    c, lab = create_labyrinth(filas, columnas)
+    aristas, paredes_inv, lab = create_labyrinth(filas, columnas)
 
-    # for u,v in c:
-    #     if (u, v) in aristas_p:
-    #         print("Hay", (u,v))
+    #---
 
-
+    if paredes == paredes_inv:
+        print(filas, columnas)
+        print(len(aristas))
+        for u, v in aristas:
+            print(u[0], u[1], v[0], v[1])
+    else:
+        print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
 
     lv = LabyrinthViewer(lab, canvas_width=1000, canvas_height=1000, margin=10)
 
