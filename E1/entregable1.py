@@ -60,20 +60,35 @@ def create_labyrinth(rows, cols):
     random.shuffle(edges)
 
     corridors = []
-
+    np = []
     # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
         if (u, v) not in aristas_p:
             if mfs.find(u) != mfs.find(v):
                 mfs.merge(u, v)
                 corridors.append((u, v))
+        # else:
+        #     np.append((u,v))
 
-    return UndirectedGraph(E=corridors)
+    # print(len(np))
+    # for u, v in corridors:
+    #     print("Path: {} {}".format(u, v))
+    return corridors,UndirectedGraph(E=corridors)
 
 
 if __name__ == '__main__':
     filas, columnas, paredes, aristas_p = load_file(filename)
 
-    lab = create_labyrinth(filas, columnas)
-    lv = LabyrinthViewer(lab, canvas_width=600, canvas_height=400, margin=10)
+    c, lab = create_labyrinth(filas, columnas)
+
+    # for u,v in c:
+    #     if (u, v) in aristas_p:
+    #         print("Hay", (u,v))
+
+
+
+    lv = LabyrinthViewer(lab, canvas_width=1000, canvas_height=1000, margin=10)
+
+    lv.add_marked_cell(aristas_p[0][0], 'blue')
+    lv.add_marked_cell(aristas_p[0][1], 'blue')
     lv.run()
