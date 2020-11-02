@@ -1,5 +1,4 @@
 import sys
-
 from algoritmia.datastructures.digraphs import UndirectedGraph
 from algoritmia.datastructures.queues import Fifo
 import random
@@ -8,12 +7,7 @@ from typing import *
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 import time
 
-"""
-empezar en (0,0)
-recorrer cada vecino de (0,0) que son 4. tener en cuenta no salirse del tamano del laberinto (filas x columnas)
-para cada vecino hacer un recorrido en profundidad. probar con anchura tambien.
-tener una lista de aristas para anadir los vertices asi tengo en cuenta donde estan las paredes
-"""
+
 Vertex = TypeVar('Vertex')
 
 filename = sys.argv[1]
@@ -41,6 +35,7 @@ def load_file(filename):
     return int(filas), int(columnas), int(paredes), aristas
 
 
+
 def create_labyrinth(rows, cols):
     # general expressions of all vertexes
     vertices = [(row, col) for row in range(rows) for col in range(cols)]
@@ -59,43 +54,57 @@ def create_labyrinth(rows, cols):
             edges.append([(row, col), (row, col + 1)])
 
     random.shuffle(edges)
+    paredes_p = 0
+    for u,v in aristas_p:
+        edges.remove([u,v])
+        paredes_p+=1
 
     corridors = []
-    paredes_invalidas = 0
+
+
 
     # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
-        if (u, v) not in aristas_p:
+        # if (u, v) not in aristas_p:
             if mfs.find(u) != mfs.find(v):
                 mfs.merge(u, v)
                 corridors.append((u, v))
-        else:
-            paredes_invalidas += 1
+        # else:
+        #     paredes_p -=1
 
     # print(len(np))
     # for u, v in corridors:
     #     print("Path: {} {}".format(u, v))
-    return corridors, paredes_invalidas, UndirectedGraph(E=corridors)
+    return corridors, paredes_p, UndirectedGraph(E=corridors)
+
+
+def pintar():
+    for pu, pv in aristas_p:
+        lv.add_marked_cell(pu, 'cyan')
+        lv.add_marked_cell(pv, 'yellow')
 
 
 if __name__ == '__main__':
     filas, columnas, paredes, aristas_p = load_file(filename)
     # ---
-
-    aristas, paredes_inv, lab = create_labyrinth(filas, columnas)
-
-    #---
-
-    if paredes == paredes_inv:
+    s = time.time()
+    aristas, paredes_p, lab = create_labyrinth(filas, columnas)
+    e = time.time()
+    print(e - s)
+    # ---
+    print(paredes_p)
+    print(paredes)
+    if paredes_p > 0:
         print(filas, columnas)
         print(len(aristas))
         for u, v in aristas:
-            print(u[0], u[1], v[0], v[1])
+            pass
+            # print(u[0], u[1], v[0], v[1])
     else:
         print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
 
     lv = LabyrinthViewer(lab, canvas_width=1000, canvas_height=1000, margin=10)
-
-    lv.add_marked_cell(aristas_p[0][0], 'blue')
-    lv.add_marked_cell(aristas_p[0][1], 'blue')
+    # pintar()
     lv.run()
+
+
