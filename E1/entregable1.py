@@ -1,6 +1,7 @@
 from algoritmia.datastructures.digraphs import UndirectedGraph
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 from labyrinthviewer import LabyrinthViewer
+import time
 import sys
 import random
 from typing import *
