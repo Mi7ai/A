@@ -1,15 +1,11 @@
-import sys
 from algoritmia.datastructures.digraphs import UndirectedGraph
-from algoritmia.datastructures.queues import Fifo
-import random
-from labyrinthviewer import LabyrinthViewer
-from typing import *
 from algoritmia.datastructures.mergefindsets import MergeFindSet
-import time
-
+from labyrinthviewer import LabyrinthViewer
+import sys
+import random
+from typing import *
 
 Vertex = TypeVar('Vertex')
-
 filename = sys.argv[1]
 
 
@@ -35,7 +31,6 @@ def load_file(filename):
     return int(filas), int(columnas), int(paredes), aristas
 
 
-
 def create_labyrinth(rows, cols):
     # general expressions of all vertexes
     vertices = [(row, col) for row in range(rows) for col in range(cols)]
@@ -55,26 +50,21 @@ def create_labyrinth(rows, cols):
 
     random.shuffle(edges)
     paredes_p = 0
-    for u,v in aristas_p:
-        edges.remove([u,v])
-        paredes_p+=1
+    for u, v in aristas_p:
+        edges.remove([u, v])
+        paredes_p += 1
 
     corridors = []
-
-
 
     # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
         # if (u, v) not in aristas_p:
-            if mfs.find(u) != mfs.find(v):
-                mfs.merge(u, v)
-                corridors.append((u, v))
-        # else:
-        #     paredes_p -=1
+        if mfs.find(u) != mfs.find(v):
+            mfs.merge(u, v)
+            corridors.append((u, v))
+        else:
+            paredes_p -= 1
 
-    # print(len(np))
-    # for u, v in corridors:
-    #     print("Path: {} {}".format(u, v))
     return corridors, paredes_p, UndirectedGraph(E=corridors)
 
 
@@ -106,5 +96,3 @@ if __name__ == '__main__':
     lv = LabyrinthViewer(lab, canvas_width=1000, canvas_height=1000, margin=10)
     # pintar()
     lv.run()
-
-
