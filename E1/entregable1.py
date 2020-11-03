@@ -32,7 +32,7 @@ def load_file(filename):
     return int(filas), int(columnas), int(paredes), aristas
 
 
-def create_labyrinth(rows, cols):
+def create_labyrinth(rows, cols, n):
     # general expressions of all vertexes
     vertices = [(row, col) for row in range(rows) for col in range(cols)]
 
@@ -50,23 +50,18 @@ def create_labyrinth(rows, cols):
             edges.append([(row, col), (row, col + 1)])
 
     random.shuffle(edges)
-    paredes_p = 0
-    for u, v in aristas_p:
-        edges.remove([u, v])
-        paredes_p += 1
 
     corridors = []
 
     # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
-        # if (u, v) not in aristas_p:
+        # if (u, v) not in aristas_p and (v, u) not in aristas_p:
         if mfs.find(u) != mfs.find(v):
-            mfs.merge(u, v)
-            corridors.append((u, v))
-        else:
-            paredes_p -= 1
+            if (u, v) not in aristas_p and (v, u) not in aristas_p:
+                mfs.merge(u, v)
+                corridors.append((u, v))
 
-    return corridors, paredes_p, UndirectedGraph(E=corridors)
+    return corridors, n, UndirectedGraph(E=corridors)
 
 
 def pintar():
@@ -76,24 +71,22 @@ def pintar():
 
 
 if __name__ == '__main__':
+    random.seed(18)
     filas, columnas, paredes, aristas_p = load_file(filename)
     # ---
     s = time.time()
-    aristas, paredes_p, lab = create_labyrinth(filas, columnas)
+    aristas, paredes_p, lab = create_labyrinth(filas, columnas, paredes)
     e = time.time()
     print(e - s)
     # ---
     print(paredes_p)
-    print(paredes)
-    if paredes_p > 0:
-        print(filas, columnas)
-        print(len(aristas))
-        for u, v in aristas:
-            pass
-            # print(u[0], u[1], v[0], v[1])
-    else:
-        print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
-
+    print("---")
+    print(filas, columnas)
+    print(len(aristas))
+    for u, v in aristas:
+        pass
+        # print(u[0], u[1], v[0], v[1])
+    print("---")
     lv = LabyrinthViewer(lab, canvas_width=1000, canvas_height=1000, margin=10)
     # pintar()
     lv.run()
