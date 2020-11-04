@@ -1,11 +1,10 @@
 from algoritmia.datastructures.digraphs import UndirectedGraph
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 from labyrinthviewer import LabyrinthViewer
+from typing import *
+import random
 import time
 import sys
-import random
-from typing import *
-import itertools
 
 Vertex = TypeVar('Vertex')
 filename = sys.argv[1]
@@ -51,50 +50,18 @@ def create_labyrinth(rows, cols):
         if col + 1 < cols:
             edges.append(((row, col), (row, col + 1)))
 
-    random.shuffle(edges)
     # descartar las paredes prohibidas de edges
-    edges = list(set(edges)-set(aristas_p))
+    edges = list(set(edges) - set(aristas_p))
+    random.shuffle(edges)
 
-    #---
     corridors = []
 
-    # if the edges are not in the same set, merge them in the same one and add them to corridors
     for u, v in edges:
-        # if (u, v) not in aristas_p and (v, u) not in aristas_p:
         if mfs.find(u) != mfs.find(v):
             mfs.merge(u, v)
             corridors.append((u, v))
 
-
-    # return corridors, n, UndirectedGraph(E=corridors)
     return corridors
-
-
-# def crear_aristas_buenas(rows, cols, aristas_p, aristas_atm):
-#     # print(list(aristas_p))
-#     # print(aristas_atm)
-#     aristas_f = []
-#     out1 = []
-#     vertices = [(row, col) for row in range(rows) for col in range(cols)]
-#     edges = []
-#
-#     for row, col in vertices:
-#         if row + 1 < rows:
-#             edges.append([(row, col), (row + 1, col)])
-#         if col + 1 < cols:
-#             edges.append([(row, col), (row, col + 1)])
-#
-#     for u, v in aristas_p:
-#         out1.append((u, v))
-#         # out1.append((v, u))
-#     print(sorted(aristas_atm))
-#     print(sorted(out1))
-#     a = set(out1)
-#     b = set(aristas_atm)
-#     print(sorted(b-a))
-#
-#
-#     return b-a
 
 
 def pintar():
@@ -114,7 +81,9 @@ if __name__ == '__main__':
     # ---
     print("---")
     print(filas, columnas)
-    # print(len(aristas))
+    print(len(aristas))
+    # for u,v in aristas:
+    #     print(u,v)
     print("---")
 
     lab = UndirectedGraph(E=aristas)
