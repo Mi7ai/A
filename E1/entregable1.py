@@ -78,15 +78,19 @@ if __name__ == '__main__':
     s = time.time()
     e = time.time()
     print(e - s)
-    # ---
-    print("---")
-    print(filas, columnas)
-    print(len(aristas))
-    # for u,v in aristas:
-    #     print(u,v)
-    print("---")
 
-    lab = UndirectedGraph(E=aristas)
-    lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
-    # pintar()
-    lv.run()
+    if len(sys.argv) == 3 and sys.argv[2] == "-g":
+        lab = UndirectedGraph(E=aristas)
+        lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
+        # pintar()
+        lv.run()
+        # QUITAR lo de abajo
+        print(filas, columnas)
+        print(len(aristas))
+        # for u,v in aristas:
+        #     print(u,v)
+    else:
+        print(filas, columnas)
+        print(len(aristas))
+        # for u,v in aristas:
+        #     print(u,v)
