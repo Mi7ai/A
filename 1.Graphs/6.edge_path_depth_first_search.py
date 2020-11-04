@@ -8,7 +8,7 @@ Vertex = TypeVar('Vertex')  # Tipo generico (Java <T>)
 Edge = Tuple[Vertex, Vertex]
 
 
-# recorrido en anchura de las aristas
+# recorrido en profundidad de las aristas
 # es lo mismo que el recorrido de aristas solo que devolvemos un array de aristas
 
 def edge_path(lab: UndirectedGraph, v_ini: Vertex) -> List[Vertex]:
