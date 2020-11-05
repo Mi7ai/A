@@ -51,16 +51,25 @@ def create_labyrinth(rows, cols):
             edges.append(((row, col), (row, col + 1)))
 
     # descartar las paredes prohibidas de edges
+
+    # for u, v in edges:
+    #     if (u,v) in aristas_p:
+    #         edges.remove((u,v))
+    #     if (v,u) in aristas_p:
+    #         edges.remove((v, u))
+    print(len(edges))
+
     edges = list(set(edges) - set(aristas_p))
+
     random.shuffle(edges)
 
     corridors = []
-
+    print(len(edges))
     for u, v in edges:
         if mfs.find(u) != mfs.find(v):
             mfs.merge(u, v)
             corridors.append((u, v))
-
+    print(len(corridors))
     return corridors
 
 
@@ -69,6 +78,19 @@ def pintar():
         lv.add_marked_cell(pu, 'cyan')
         lv.add_marked_cell(pv, 'yellow')
 
+def bien_formado2(aristas, aristas_p):
+    for u, v in aristas:
+        if (u,v) in aristas_p:
+             return False
+    return True
+
+def bien_formado(lab, prohibidas):
+    c = 0
+    for u, v in lab.E:
+        if (u, v) in prohibidas:
+            c += 1
+    return c
+
 
 if __name__ == '__main__':
     random.seed(42)
@@ -76,21 +98,30 @@ if __name__ == '__main__':
     aristas = create_labyrinth(filas, columnas)
     # ---
     s = time.time()
+    lab = UndirectedGraph(E=aristas)
     e = time.time()
     print(e - s)
+    print()
+
+    print("---")
+    print("nr aristas:", len(lab.E))
+    print("nr vertices:", len(lab.V))
 
     if len(sys.argv) == 3 and sys.argv[2] == "-g":
-        lab = UndirectedGraph(E=aristas)
-        lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
-        # pintar()
-        lv.run()
+
         # QUITAR lo de abajo
         print(filas, columnas)
         print(len(aristas))
         # for u,v in aristas:
         #     print(u,v)
+        lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
+        # pintar()
+        lv.run()
     else:
-        print(filas, columnas)
-        print(len(aristas))
-        # for u,v in aristas:
-        #     print(u,v)
+        if len(lab.E) - (len(lab.V)-1) == 0:
+            print(filas, columnas)
+            print(len(aristas))
+            for u, v in lab.E:
+                print(u[0], u[1], v[0], v[1])
+        else:
+            print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
