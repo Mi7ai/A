@@ -81,7 +81,6 @@ if __name__ == '__main__':
         for u, v in lab.E:
             print(u[0], u[1], v[0], v[1])
         lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
-        # pintar()
         lv.run()
     else:
         if bien_formado(lab, vertices):
