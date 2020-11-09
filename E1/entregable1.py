@@ -6,19 +6,16 @@ import random
 import sys
 
 Vertex = TypeVar('Vertex')
-filename = sys.argv[1]
 
 
-def load_file(filename):
+def load_file():
     aristas = []
 
     try:
-        f = open(filename, "r")
-        filas, columnas = f.readline().split(" ")
+        filas, columnas = sys.stdin.readline().split(" ")
+        paredes = sys.stdin.readline()
 
-        paredes = f.readline()
-
-        for line in f:
+        for line in sys.stdin.readlines():
             x1, y1, x2, y2 = line.split(" ")
             vertice1 = (int(x1), int(y1))
             vertice2 = (int(x2), int(y2))
@@ -27,7 +24,6 @@ def load_file(filename):
             aristas.append(arista)
     except IOError:
         print("File cannot be open!")
-
     return int(filas), int(columnas), int(paredes), aristas
 
 
@@ -69,24 +65,24 @@ def bien_formado(lab, vertices):
 
 if __name__ == '__main__':
     random.seed(18)
-    filas, columnas, paredes, aristas_p = load_file(filename)
+    filas, columnas, paredes, aristas_p = load_file()
     aristas, vertices = create_labyrinth(filas, columnas)
 
     lab = UndirectedGraph(E=aristas)
+    if bien_formado(lab, vertices):
+        print(filas, columnas)
+        print(len(aristas))
+        for u, v in lab.E:
+            print(u[0], u[1], v[0], v[1])
+    else:
+        print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
 
     if len(sys.argv) == 3 and sys.argv[2] == "-g":
-
         print(filas, columnas)
         print(len(aristas))
         for u, v in lab.E:
             print(u[0], u[1], v[0], v[1])
         lv = LabyrinthViewer(lab, canvas_width=1300, canvas_height=1300, margin=10)
         lv.run()
-    else:
-        if bien_formado(lab, vertices):
-            print(filas, columnas)
-            print(len(aristas))
-            for u, v in lab.E:
-                print(u[0], u[1], v[0], v[1])
-        else:
-            print("NO ES POSIBLE CONSTRUIR EL LABERINTO")
+
+
