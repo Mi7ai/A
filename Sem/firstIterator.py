@@ -9,19 +9,20 @@ class FirstIterator:
         self.res = 0
         self.rangeNumbers = rangeNumbers
 
-    def __iter__(self) -> Iterator[int]:
+    def __iter__(self):
         return self
 
-    def __next__(self) -> int:
+    def __next__(self):
         if self.start == self.end or self.start == self.current:
             raise StopIteration
 
         self.res = self.rangeNumbers[self.start]
         self.start += 1
+
         return self.res
 
 
-def first(n, numbers) -> Iterable[int]:
+def first(n, numbers):
     return FirstIterator(n, numbers)
 
 
