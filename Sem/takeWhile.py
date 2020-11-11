@@ -1,4 +1,4 @@
-def filter(cond, it):
+def takeWhile(cond, it):
     for el in it:
         if cond(el):
             yield el
@@ -14,6 +14,6 @@ def cond(n):
 
 if __name__ == '__main__':
     numbers = [2, 3, 4, 5]
-    f = filter(lambda x: x % 2 == 0, numbers)
+    f = takeWhile(lambda x: x % 2 == 0, numbers)
     for i in f:
         print(i)
