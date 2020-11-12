@@ -1,5 +1,6 @@
 from algoritmia.datastructures.digraphs import UndirectedGraph
 import sys
+import math
 
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 
@@ -45,31 +46,44 @@ def load_file2():
 
 # algoritmo kruskal
 # Ordenar todas las aristas en orden creciente de su peso.
-# Pick the smallest edge. Check if it forms a cycle with the spanning tree formed so far. If cycle is not formed, include this edge. Else, discard it.
 # elegir el vertice mas pequeno. mirar si tiene ciclo con el spanning tree formado hasta el momento. Si no tiene ciclo, incluirlo en spanning tree, si tiene, descartarlo
 # repetir paso anterior hasta V-1 aristas en el spt
 
 def create_graph(puntos):
-    # vertices = []
-    mfs = MergeFindSet()
-    for v in range(len(puntos)):
-        mfs.add(puntos[v])
+    aristas = dict()
+    vert = set()
+
+    # mfs = MergeFindSet()
+    # for v in range(len(puntos)):
+    #     mfs.add(puntos[v])
 
     vertices = []
     for v in range(len(puntos)):
         for w in range(len(puntos)):
-            if v != w:
-                vertices.append((v, w))
+            # if v != w:
+            weight = distancia_euclidea(puntos[v], puntos[w])
+            aristas[(v, w)] = weight
+            aristas[(w, v)] = weight
+    return aristas
 
 
+def distancia_euclidea(x, y):
+    x1 = x[0]
+    y1 = x[1]
+    x2 = y[0]
+    y2 = y[1]
 
-    return vertices
+    return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
 
 
 if __name__ == '__main__':
     nr_puntos, puntos = load_file2()
-    vertices = create_graph(puntos)
-    print(vertices)
-
-    g = UndirectedGraph(V=vertices)
+    aristas = create_graph(puntos)
+    print(aristas)
+    x = puntos[0]
+    y = puntos[1]
+    print()
+    print(aristas)
+    g = UndirectedGraph(E=aristas.keys())
+    print(g.E)
 
