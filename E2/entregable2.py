@@ -51,23 +51,18 @@ def load_file2():
 
 def create_graph(puntos):
     aristas = dict()
-    vert = set()
 
-    # mfs = MergeFindSet()
-    # for v in range(len(puntos)):
-    #     mfs.add(puntos[v])
-
-    vertices = []
     for v in range(len(puntos)):
         for w in range(len(puntos)):
-            # if v != w:
-            weight = distancia_euclidea(puntos[v], puntos[w])
-            aristas[(v, w)] = weight
-            aristas[(w, v)] = weight
+            if v != w:
+                weight = euclidean_distance(puntos[v], puntos[w])
+                aristas[(v, w)] = weight
+                aristas[(w, v)] = weight
+
     return aristas
 
 
-def distancia_euclidea(x, y):
+def euclidean_distance(x, y):
     x1 = x[0]
     y1 = x[1]
     x2 = y[0]
@@ -76,14 +71,22 @@ def distancia_euclidea(x, y):
     return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
 
 
+# TODO: implementar esto
+def is_cicle():
+    pass
+
+
+def kruskal(aristas):
+
+    aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
+    st = set()
+
+    #TODO: mirar como hacer el algoritmo
+
+
 if __name__ == '__main__':
     nr_puntos, puntos = load_file2()
     aristas = create_graph(puntos)
-    print(aristas)
-    x = puntos[0]
-    y = puntos[1]
-    print()
-    print(aristas)
-    g = UndirectedGraph(E=aristas.keys())
-    print(g.E)
 
+    g = UndirectedGraph(E=aristas.keys())
+    k = kruskal(aristas)
