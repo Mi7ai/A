@@ -75,7 +75,7 @@ def euclidean_distance(x, y):
 
 # TODO: implementar esto
 # es un ciclo entre el set y una arista
-def is_cicle(s: MergeFindSet, u, v):
+def is_cycle(s: MergeFindSet, u, v):
     if s.find(u) == s.find(v):
         return True
     s.merge(u, v)
@@ -84,23 +84,36 @@ def is_cicle(s: MergeFindSet, u, v):
 
 def kruskal(aristas, g):
     aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
-
-    # orden(aristas_ordenadas)
-
     mfs = MergeFindSet()
-    mfs.add(0)
-    mfs.add(1)
-    print(mfs)
     mst = set()
-    print(is_cicle(mfs,1,2))
-    dis_set = []
-    for v in g.V:
-        a = set()
-        a.add(v)
-        dis_set.append(a)
 
+    for v in g.V:
+        # a = set()
+        # a.add(v)
+        mfs.add(v)
+    print(mfs)
     for edge, w in aristas_ordenadas:
-        pass
+        u = edge[0]
+        v = edge[1]
+        if mfs.find(u) != mfs.find(v):
+            if len(mst) == 0:
+                mfs.merge(u, v)
+                mst.union([u])
+                # mst.append(u)
+                # mst.append(v)
+            else:
+                mfs.merge(u, v)
+        else:
+            print("yes a cycle")
+    print(mfs)
+
+    # dis_set = []
+    # for v in g.V:
+    #     a = set()
+    #     a.add(v)
+    #     dis_set.append(a)
+
+
     return mst
 
 
@@ -118,4 +131,3 @@ if __name__ == '__main__':
     # print(g.E)
     k = kruskal(aristas, g)
     print(k)
-
