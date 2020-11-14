@@ -1,8 +1,10 @@
 from algoritmia.datastructures.digraphs import UndirectedGraph
 import sys
 import math
-
+from typing import *
 from algoritmia.datastructures.mergefindsets import MergeFindSet
+
+Vertex = TypeVar('Vertex')
 
 """
 objetivo: obtener ciclos hamiltonianos de longitud minima
@@ -57,7 +59,7 @@ def create_graph(puntos):
             if v != w:
                 weight = euclidean_distance(puntos[v], puntos[w])
                 aristas[(v, w)] = weight
-                aristas[(w, v)] = weight
+                # aristas[(w, v)] = weight
 
     return aristas
 
@@ -72,16 +74,39 @@ def euclidean_distance(x, y):
 
 
 # TODO: implementar esto
-def is_cicle():
-    pass
+# es un ciclo entre el set y una arista
+def is_cicle(s: MergeFindSet, u, v):
+    if s.find(u) == s.find(v):
+        return True
+    s.merge(u, v)
+    return False
 
 
-def kruskal(aristas):
-
+def kruskal(aristas, g):
     aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
-    st = set()
 
-    #TODO: mirar como hacer el algoritmo
+    # orden(aristas_ordenadas)
+
+    mfs = MergeFindSet()
+    mfs.add(0)
+    mfs.add(1)
+    print(mfs)
+    mst = set()
+    print(is_cicle(mfs,1,2))
+    dis_set = []
+    for v in g.V:
+        a = set()
+        a.add(v)
+        dis_set.append(a)
+
+    for edge, w in aristas_ordenadas:
+        pass
+    return mst
+
+
+def orden(aristas_ordenadas):
+    for e, w in aristas_ordenadas:
+        print(e, w)
 
 
 if __name__ == '__main__':
@@ -89,4 +114,8 @@ if __name__ == '__main__':
     aristas = create_graph(puntos)
 
     g = UndirectedGraph(E=aristas.keys())
-    k = kruskal(aristas)
+    # print(g.V)
+    # print(g.E)
+    k = kruskal(aristas, g)
+    print(k)
+
