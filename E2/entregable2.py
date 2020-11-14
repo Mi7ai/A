@@ -86,25 +86,32 @@ def kruskal(aristas, g):
     aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
     mfs = MergeFindSet()
     mst = set()
+    distance = 0
 
     for v in g.V:
         # a = set()
         # a.add(v)
         mfs.add(v)
     print(mfs)
+
     for edge, w in aristas_ordenadas:
         u = edge[0]
         v = edge[1]
         if mfs.find(u) != mfs.find(v):
             if len(mst) == 0:
                 mfs.merge(u, v)
-                mst.union([u])
+                distance += w
+                # mst.union([u])
                 # mst.append(u)
                 # mst.append(v)
+                print(u,v ,"not a cicle")
             else:
                 mfs.merge(u, v)
+                print(u, v, "not a cicle")
+                distance += w
         else:
             print("yes a cycle")
+    print(distance)
     print(mfs)
 
     # dis_set = []
