@@ -93,6 +93,7 @@ def kruskal(aristas, g):
         # a.add(v)
         mfs.add(v)
     print(mfs)
+    orden(aristas_ordenadas)
 
     for edge, w in aristas_ordenadas:
         u = edge[0]
