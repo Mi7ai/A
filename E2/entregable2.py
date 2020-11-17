@@ -3,6 +3,7 @@ from algoritmia.datastructures.mergefindsets import MergeFindSet
 from typing import *
 import sys
 import math
+
 Vertex = TypeVar('Vertex')
 
 """
@@ -45,11 +46,6 @@ def load_file2():
     return int(nr_puntos), puntos
 
 
-# algoritmo kruskal
-# Ordenar todas las aristas en orden creciente de su peso.
-# elegir el vertice mas pequeno. mirar si tiene ciclo con el spanning tree formado hasta el momento. Si no tiene ciclo, incluirlo en spanning tree, si tiene, descartarlo
-# repetir paso anterior hasta V-1 aristas en el spt
-
 def create_graph(puntos):
     aristas = dict()
 
@@ -72,56 +68,71 @@ def euclidean_distance(x, y):
     return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
 
 
-# TODO: implementar esto
-# es un ciclo entre el set y una arista
-def is_cycle(s: MergeFindSet, u, v):
-    if s.find(u) == s.find(v):
-        return True
-    s.merge(u, v)
-    return False
+"""algoritmo kruskal
+Ordenar todas las aristas en orden creciente de su peso.
+elegir una arista, mirar si tiene ciclo con el spanning tree formado hasta el momento. Si no tiene ciclo, 
+hacer un merge y sacar los vertices, si tiene, descartar la arista y pasar a la siguiente
+repetir hasta V-1 aristas en el spt"""
+
+"""
+REQUISITO:
+el segundo elemento de la lista que representa el camino será el vértice de menor índice entre los dos sucesores 
+del vértice 0
+"""
+
+# TODO: finish implementation or getting the second vertex of path index 2
+def min_vertex(g: UndirectedGraph, v):
+     for suc in sorted(g.succs(v)):
+
+        yield suc
+
+
 
 
 def kruskal(aristas, g):
+    path = []
     aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
     mfs = MergeFindSet()
-    mst = set()
     distance = 0
 
     for v in g.V:
         # a = set()
         # a.add(v)
         mfs.add(v)
-    print(mfs)
-    orden(aristas_ordenadas)
+    # orden(aristas_ordenadas)
 
     for edge, w in aristas_ordenadas:
         u = edge[0]
         v = edge[1]
         if mfs.find(u) != mfs.find(v):
-            if len(mst) == 0:
-                mfs.merge(u, v)
+            if len(path) == 0:
+
                 distance += w
-                # mst.union([u])
-                # mst.append(u)
-                # mst.append(v)
-                print(u,v ,"not a cicle")
+                path.append(u)
+                path.append(v)  # segundo vertice
+# ---- stuck here
+                vertice_a_elegir = next(min_vertex(g, v))
+                print( vertice_a_elegir)
+                while  vertice_a_elegir  == u:
+                    vertice_a_elegir = next(min_vertex(g, v))
+                mfs.merge(u, vertice_a_elegir)
+                # print(u, v, "not a cicle")
+# ----
             else:
                 mfs.merge(u, v)
-                print(u, v, "not a cicle")
-                distance += w
-        else:
-            print("yes a cycle")
+                if u not in path:
+                    path.append(u)
+                    distance += w
+                if v not in path:
+                    path.append(v)
+                    distance += w
+                # print(u, v, "not a cicle")
+
+        # else:
+        # print("yes a cycle")
     print(distance)
-    print(mfs)
 
-    # dis_set = []
-    # for v in g.V:
-    #     a = set()
-    #     a.add(v)
-    #     dis_set.append(a)
-
-
-    return mst
+    return path
 
 
 def orden(aristas_ordenadas):
@@ -136,5 +147,7 @@ if __name__ == '__main__':
     g = UndirectedGraph(E=aristas.keys())
     # print(g.V)
     # print(g.E)
-    k = kruskal(aristas, g)
-    print(k)
+    kruskal_path = kruskal(aristas, g)
+    print(kruskal_path)
+
+    print(min_vertex(g, 0))
