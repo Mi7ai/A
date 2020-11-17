@@ -1,9 +1,8 @@
 from algoritmia.datastructures.digraphs import UndirectedGraph
+from algoritmia.datastructures.mergefindsets import MergeFindSet
+from typing import *
 import sys
 import math
-from typing import *
-from algoritmia.datastructures.mergefindsets import MergeFindSet
-
 Vertex = TypeVar('Vertex')
 
 """
