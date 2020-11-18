@@ -6,12 +6,6 @@ import math
 
 Vertex = TypeVar('Vertex')
 
-"""
-objetivo: obtener ciclos hamiltonianos de longitud minima
-que cono es un ciclo hamiltoniano: ir de un vertice a todos los demas formando un camino y que el ultimo enlace con el 
-primero
-"""
-
 
 def load_file():
     nr_puntos = 0
