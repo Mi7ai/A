@@ -52,7 +52,7 @@ def create_graph(puntos):
 
     return aristas
 
-
+#Todo: se puede mejorar quitando los argumentos del principio
 def euclidean_distance(x, y):
     x1 = x[0]
     y1 = x[1]
@@ -76,10 +76,10 @@ del vértice 0
 
 
 # TODO: finish implementation or getting the second vertex of path index 2
-def min_vertex(g: UndirectedGraph, v):
-    lista_vertices_vecinos = min(sorted(g.succs(v)))
-    print(min(sorted(g.succs(v))))
-    return lista_vertices_vecinos
+# def min_vertex(g: UndirectedGraph, v):
+#     lista_vertices_vecinos = min(sorted(g.succs(v)))
+#     print(min(sorted(g.succs(v))))
+#     return lista_vertices_vecinos
 
 
 def kruskal(aristas, g):
@@ -89,10 +89,8 @@ def kruskal(aristas, g):
     distance = 0
 
     for v in g.V:
-        # a = set()
-        # a.add(v)
         mfs.add(v)
-    # orden(aristas_ordenadas)
+    orden(aristas_ordenadas)
 
     for edge, w in aristas_ordenadas:
         u = edge[0]
@@ -100,17 +98,17 @@ def kruskal(aristas, g):
         if mfs.find(u) != mfs.find(v):
             if len(path) == 0:
 
-                distance += w
-                path.append(u) #vertice a mirar
+                path.append(u)  # vertice a mirar
 
-                # ---- stuck here
                 # mirar los succesores del vertice cero, o el primer vertice del grafo, no el segundo vertice
 
                 vertice_a_elegir = min(sorted(g.succs(u)))
-                print(vertice_a_elegir)
+                # print(vertice_a_elegir)
                 if vertice_a_elegir < v:
                     path.append(vertice_a_elegir)
                 mfs.merge(u, vertice_a_elegir)
+                distance += aristas[u, vertice_a_elegir]
+
                 # print(u, v, "not a cicle")
             # ----
             else:
@@ -126,13 +124,22 @@ def kruskal(aristas, g):
         # else:
         # print("yes a cycle")
     print(distance)
-    print(aristas_ordenadas)
+    # print(aristas_ordenadas)
     return path
 
 
 def orden(aristas_ordenadas):
     for e, w in aristas_ordenadas:
         print(e, w)
+
+
+def check_distance(aristas, path):
+    path = [0, 1, 4, 3, 2]
+    total = 0
+    for i in range(len(path) - 1):
+        total += aristas[path[i], path[i + 1]]
+        print("De {} a {} = {}. Acumulado = {}".format(path[i], path[i + 1], (aristas[path[i], path[i + 1]]), total))
+    print("Distancia total del camino = {}".format(total))
 
 
 if __name__ == '__main__':
@@ -144,5 +151,4 @@ if __name__ == '__main__':
     # print(g.E)
     kruskal_path = kruskal(aristas, g)
     print(kruskal_path)
-
-    print(min_vertex(g, 0))
+    check_distance(aristas, kruskal_path)
