@@ -70,17 +70,16 @@ repetir hasta V-1 aristas en el spt"""
 
 """
 REQUISITO:
-el segundo elemento de la lista que representa el camino será el vértice de menor índice entre los dos sucesores 
+el segundo elemento de la lista que representa el camino será el vértice de menor índice entre los sucesores 
 del vértice 0
 """
 
+
 # TODO: finish implementation or getting the second vertex of path index 2
 def min_vertex(g: UndirectedGraph, v):
-     for suc in sorted(g.succs(v)):
-
-        yield suc
-
-
+    lista_vertices_vecinos = min(sorted(g.succs(v)))
+    print(min(sorted(g.succs(v))))
+    return lista_vertices_vecinos
 
 
 def kruskal(aristas, g):
@@ -102,16 +101,18 @@ def kruskal(aristas, g):
             if len(path) == 0:
 
                 distance += w
-                path.append(u)
-                path.append(v)  # segundo vertice
-# ---- stuck here
-                vertice_a_elegir = next(min_vertex(g, v))
-                print( vertice_a_elegir)
-                while  vertice_a_elegir  == u:
-                    vertice_a_elegir = next(min_vertex(g, v))
+                path.append(u) #vertice a mirar
+
+                # ---- stuck here
+                # mirar los succesores del vertice cero, o el primer vertice del grafo, no el segundo vertice
+
+                vertice_a_elegir = min(sorted(g.succs(u)))
+                print(vertice_a_elegir)
+                if vertice_a_elegir < v:
+                    path.append(vertice_a_elegir)
                 mfs.merge(u, vertice_a_elegir)
                 # print(u, v, "not a cicle")
-# ----
+            # ----
             else:
                 mfs.merge(u, v)
                 if u not in path:
@@ -125,7 +126,7 @@ def kruskal(aristas, g):
         # else:
         # print("yes a cycle")
     print(distance)
-
+    print(aristas_ordenadas)
     return path
 
 
