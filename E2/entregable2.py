@@ -1,8 +1,10 @@
-from algoritmia.datastructures.digraphs import UndirectedGraph
+from algoritmia.datastructures.digraphs import UndirectedGraph, WeightingFunction
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 from typing import *
 import sys
 import math
+
+from algoritmia.utils import infinity
 
 Vertex = TypeVar('Vertex')
 
@@ -42,17 +44,53 @@ def load_file2():
 
 def create_graph(puntos):
     aristas = dict()
-
+    aristas_con_peso = []
     for v in range(len(puntos)):
         for w in range(len(puntos)):
             if v != w:
                 weight = euclidean_distance(puntos[v], puntos[w])
                 aristas[(v, w)] = weight
-                # aristas[(w, v)] = weight
+                # aristas_con_peso.append(((v,w),weight))
+    # cini, cfin, cmed = 0, 0, 0
+    ini = 0
+    fin = len(puntos)
+    aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
+    limite = [2] * len(puntos)
+    limite[0] = 1
+    limite[len(puntos) - 1] = 1
+    print(limite)
 
-    return aristas
+    # miro cada arista
+    # si cada vertice aparece mas de 2 veces
 
-#Todo: se puede mejorar quitando los argumentos del principio
+    for i in range(len(aristas_ordenadas)):
+
+        edge = aristas_ordenadas[i][0]
+        w = aristas_ordenadas[i][1]
+        vertice1 = edge[0]
+        vertice2 = edge[1]
+
+        # if limite[vertice1] > 0 and i == ini:
+        #     aristas_con_peso.append((edge, w))
+
+        if vertice1 == ini and limite[vertice1] > 0:
+
+            # peso = aristas[edge]
+            aristas_con_peso.append((edge, w))
+            limite[vertice1] -= 1
+        elif vertice2 == fin and limite[vertice2] > 0:
+            # peso = aristas[edge]
+            aristas_con_peso.append((edge, w))
+
+        elif limite[i] > 0:
+            # peso = aristas[edge]
+            aristas_con_peso.append((edge, w))
+            limite[i] -= 1
+
+    return aristas, aristas_con_peso
+
+
+# Todo: se puede mejorar quitando los argumentos del principio
 def euclidean_distance(x, y):
     x1 = x[0]
     y1 = x[1]
@@ -75,11 +113,20 @@ del vértice 0
 """
 
 
-# TODO: finish implementation or getting the second vertex of path index 2
-# def min_vertex(g: UndirectedGraph, v):
-#     lista_vertices_vecinos = min(sorted(g.succs(v)))
-#     print(min(sorted(g.succs(v))))
-#     return lista_vertices_vecinos
+# de entre todas las aristas no visitadas escoge la mas corta
+
+def shortest_edge(aristas, u, v):
+    lista_vertices_vecinos = g.succs(u)
+    min_distance = infinity
+    vertice_menor = v
+    for vecino in lista_vertices_vecinos:
+        if vecino != v:
+            if aristas[u, vecino] < min_distance:
+                min_distance = aristas[u, vecino]
+                vertice_menor = vecino
+
+    # print(vertice_menor)
+    return vertice_menor
 
 
 def kruskal(aristas, g):
@@ -90,9 +137,13 @@ def kruskal(aristas, g):
 
     for v in g.V:
         mfs.add(v)
-    orden(aristas_ordenadas)
+    # PRINT
+    # orden(aristas_ordenadas)
 
-    for edge, w in aristas_ordenadas:
+    # PRINT
+    sa = sorted(g.E, key=lambda i: aristas[i])
+    print(sa)
+    for edge in sorted(g.E, key=lambda i: aristas[i]):
         u = edge[0]
         v = edge[1]
         if mfs.find(u) != mfs.find(v):
@@ -100,14 +151,14 @@ def kruskal(aristas, g):
 
                 path.append(u)  # vertice a mirar
 
-                # mirar los succesores del vertice cero, o el primer vertice del grafo, no el segundo vertice
+                # mirar las aristas succesoras del vertice cero,y quedarse con el vertice mas corto
 
-                vertice_a_elegir = min(sorted(g.succs(u)))
+                vertice_a_elegir = shortest_edge(aristas, u, v)
                 # print(vertice_a_elegir)
                 if vertice_a_elegir < v:
                     path.append(vertice_a_elegir)
                 mfs.merge(u, vertice_a_elegir)
-                distance += aristas[u, vertice_a_elegir]
+                # distance += aristas[u, vertice_a_elegir]
 
                 # print(u, v, "not a cicle")
             # ----
@@ -115,20 +166,21 @@ def kruskal(aristas, g):
                 mfs.merge(u, v)
                 if u not in path:
                     path.append(u)
-                    distance += w
+                    # distance += w
                 if v not in path:
                     path.append(v)
-                    distance += w
+                    # distance += w
                 # print(u, v, "not a cicle")
 
         # else:
         # print("yes a cycle")
-    print(distance)
+    print("Distancia", distance)
     # print(aristas_ordenadas)
     return path
 
 
 def orden(aristas_ordenadas):
+    print("Aristas ordenadas")
     for e, w in aristas_ordenadas:
         print(e, w)
 
@@ -144,11 +196,11 @@ def check_distance(aristas, path):
 
 if __name__ == '__main__':
     nr_puntos, puntos = load_file2()
-    aristas = create_graph(puntos)
-
+    aristas, aristas_con_peso = create_graph(puntos)
+    # print(orden(aristas_con_peso))
     g = UndirectedGraph(E=aristas.keys())
-    # print(g.V)
-    # print(g.E)
+    ew = WeightingFunction(aristas_con_peso)
     kruskal_path = kruskal(aristas, g)
-    print(kruskal_path)
-    check_distance(aristas, kruskal_path)
+    # print(kruskal_path)
+    # check_distance(aristas, kruskal_path)
+    # print(shortest_edge(aristas,3,0))
