@@ -80,8 +80,9 @@ def create_graph(puntos):
         vertice1 = edge[0]
         vertice2 = edge[1]
 
-        if limite[vertice1] > 0:
+        if limite[vertice1] > 0 and limite[vertice2] > 0:
                 limite[vertice1] -= 1
+                limite[vertice2] -= 1
                 aristas_buenas.append((edge, w))
         # if limite[vertice1] > 0 and limite[vertice2] > 0:
         #     if vertice1 == ini and limite[vertice1] > 0:
@@ -148,8 +149,8 @@ def kruskal(aristas, g):
     orden(aristas_ordenadas)
 
     # PRINT
-    sa = sorted(g.E, key=lambda i: aristas[i])
-    print(sa)
+    # sa = sorted(g.E, key=lambda i: aristas[i])
+    # print(sa)
 
     for edge in sorted(g.E, key=lambda i: aristas[i]):
         u = edge[0]
@@ -188,7 +189,7 @@ def orden(aristas_ordenadas):
 
 
 def check_distance(aristas, path):
-    path = [0, 1, 4, 3, 2]
+    # path = [0, 1, 4, 3, 2]
     total = 0
     for i in range(len(path) - 1):
         total += aristas[path[i], path[i + 1]]
@@ -199,14 +200,14 @@ def check_distance(aristas, path):
 if __name__ == '__main__':
     nr_puntos, puntos = load_file2()
     aristas, aristas_buenas = create_graph(puntos)
-    orden(sorted(aristas.items(),key=lambda x: x[1]))
     aristas2 = dict()
     for e, w in aristas_buenas:
         aristas2[e] = w
-    print(aristas2.items())
+    # print("Aristas2 ",aristas2.items())
     g = UndirectedGraph(E=aristas2.keys())
     kruskal_path = kruskal(aristas2, g)
     print(kruskal_path)
     # check_distance(aristas, kruskal_path)
     # print(shortest_edge(aristas,3,0))
     # create_graph2(puntos)
+    print(orden(aristas.items()))
