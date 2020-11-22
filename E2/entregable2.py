@@ -1,4 +1,4 @@
-from algoritmia.datastructures.digraphs import UndirectedGraph, WeightingFunction
+from algoritmia.datastructures.digraphs import UndirectedGraph
 from algoritmia.datastructures.mergefindsets import MergeFindSet
 from typing import *
 import sys
@@ -41,9 +41,6 @@ def load_file2():
     except IOError:
         print("File cannot be open!")
     return int(nr_puntos), puntos
-
-
-
 
 
 def create_graph(puntos):
@@ -129,7 +126,6 @@ def kruskal2(aristas):
     return path
 
 
-
 def orden(aristas_ordenadas):
     print("Aristas ordenadas")
     for e, w in aristas_ordenadas:
@@ -175,6 +171,7 @@ def kruskal_final(g, v_ini, aristas):
 
     return vertices
 
+
 # dado un vertice devuelve ordenadas sus aristas
 def ordered_edges_of_vertex(v_ini):
     vecinos = []
@@ -183,7 +180,8 @@ def ordered_edges_of_vertex(v_ini):
 
     return sorted(vecinos, key=lambda x: aristas[x])
 
-#este no va, hayq eu hacer lo mismo que kruskal pero en cada iteracion elegir
+
+# este no va, hayq eu hacer lo mismo que kruskal pero en cada iteracion elegir
 def prim_final(g, v_ini, aristas):
     q = Fifo()
     seen = set()
@@ -209,10 +207,12 @@ def prim_final(g, v_ini, aristas):
             mfs.merge(u, v)
             for suc in g.succs(v):
                 if suc not in seen:
-                    seen.add((v,suc))
-                    q.push((v,suc))
+                    seen.add((v, suc))
+                    q.push((v, suc))
 
         return vertices
+
+
 if __name__ == '__main__':
     nr_puntos, puntos = load_file2()
     aristas, aristas_buenas = create_graph(puntos)
@@ -233,7 +233,7 @@ if __name__ == '__main__':
     # create_graph2(puntos)
     # print(orden(sorted(aristas.items(), key=lambda x: x[1])))
     # g2 = UndirectedGraph(E=aristas)
-    prim_path = prim_final(g , 0, aristas)
+    prim_path = prim_final(g, 0, aristas)
     print(prim_path)
 
     print(ordered_edges_of_vertex(1))
