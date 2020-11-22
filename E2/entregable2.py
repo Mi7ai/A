@@ -43,16 +43,7 @@ def load_file2():
     return int(nr_puntos), puntos
 
 
-def create_graph2(puntos):
-    aristas = []
-    for v in range(len(puntos)):
-        for w in range(len(puntos)):
-            if v != w:
-                weight = euclidean_distance(puntos[v], puntos[w])
-                aristas.append(((v, w), weight))
-    print("Create graph 2")
-    print(aristas)
-    return aristas
+
 
 
 def create_graph(puntos):
