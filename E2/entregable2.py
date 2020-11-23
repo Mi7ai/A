@@ -3,7 +3,7 @@ from algoritmia.datastructures.mergefindsets import MergeFindSet
 from typing import *
 import sys
 import math
-
+import time
 from algoritmia.datastructures.queues import Fifo
 from algoritmia.utils import infinity
 
@@ -104,6 +104,7 @@ def kruskal2(aristas):
     mfs = MergeFindSet()
     limite = [2] * len(puntos)
     path = []
+    d = 0
     for v in range(len(puntos)):
         mfs.add(v)
 
@@ -113,7 +114,7 @@ def kruskal2(aristas):
 
         if limite[u] > 0 and limite[v] > 0:  # puedo meter la arista si no tiene ciclo
             if mfs.find(u) != mfs.find(v):  # no hace ciclo
-
+                d += w
                 mfs.merge(u, v)
                 path.append(edge)
                 limite[u] -= 1
@@ -123,22 +124,57 @@ def kruskal2(aristas):
         if x == 1:
             vertice_extra.append(i)
     path.append(tuple(vertice_extra))
-    return path
+
+    g_kruskal = UndirectedGraph(E=path)
+    return path, g_kruskal, d
 
 
-def orden(aristas_ordenadas):
-    print("Aristas ordenadas")
-    for e, w in aristas_ordenadas:
-        print(e, w)
+def menor_arista_iter(v_ini, g_prim, aristas_prim):
+    vecinos = []
+
+    for v in g_prim.succs(v_ini):
+        vecinos.append(((v_ini, v), aristas_prim[(v_ini, v)]))
+
+    for a in sorted(vecinos, key=lambda x: x[1]):
+        yield a
 
 
-def check_distance(aristas, path):
-    # path = [0, 1, 4, 3, 2]
-    total = 0
-    for i in range(len(path) - 1):
-        total += aristas[path[i], path[i + 1]]
-        print("De {} a {} = {}. Acumulado = {}".format(path[i], path[i + 1], (aristas[path[i], path[i + 1]]), total))
-    print("Distancia total del camino = {}".format(total))
+def prim2(v_ini, aristas_prim):
+    aristas_ordenadas = []
+    for arista, w in sorted(aristas_prim.items(), key=lambda x: x[1]):
+        aristas_ordenadas.append(arista)
+
+    mfs = MergeFindSet()
+    g_prim = UndirectedGraph(E=aristas_ordenadas)
+
+    path = []
+
+    for v in range(len(puntos)):
+        mfs.add(v)
+
+    seen = set()
+    q = Fifo()
+
+    q.push(v_ini)
+    seen.add(v_ini)
+
+    menor_arista = menor_arista_iter(v_ini, g_prim, aristas_prim)
+    aristas_vecinas_ordenadas = []
+    for i in menor_arista:
+        aristas_vecinas_ordenadas.append(i)
+    # print(aristas_vecinas_ordenadas)
+    while len(q) > 0:
+        u = q.pop()
+
+        for suc in g_prim.succs(u):
+            if suc not in seen:
+                seen.add(suc)
+                q.push(suc)
+
+        # if mfs.find(u) != mfs.find(v):  # no hace ciclo
+        #     seen.add(u,v)
+
+    return path, g_prim
 
 
 def kruskal_final(g, v_ini, aristas):
@@ -150,13 +186,13 @@ def kruskal_final(g, v_ini, aristas):
     seen.add(v_ini)
 
     vertices.append(v_ini)
-    sucs = g.succs(v_ini)
-
-    vecino1 = sucs.pop()
-    vecino2 = sucs.pop()
-
-    if aristas[(v_ini, vecino1)] < aristas[(v_ini, vecino2)]:
-        vecino1 = vecino2
+    # sucs = g.succs(v_ini)
+    #
+    # vecino1 = sucs.pop()
+    # vecino2 = sucs.pop()
+    vecino1 = min(g.succs(v_ini))
+    # if aristas[(v_ini, vecino1)] < aristas[(v_ini, vecino2)]:
+    #     vecino1 = vecino2
     q.push(vecino1)
     seen.add(vecino1)
 
@@ -172,8 +208,23 @@ def kruskal_final(g, v_ini, aristas):
     return vertices
 
 
+def orden(aristas_ordenadas):
+    print("Aristas ordenadas")
+    for e, w in aristas_ordenadas:
+        print(e, w)
+
+
+def calculate_distance(aristas, path):
+    # path = [0, 1, 4, 3, 2]
+    total = 0
+    for i in range(len(path) - 1):
+        total += aristas[path[i], path[i + 1]]
+    total += aristas[path[0], path[len(path) - 1]]
+    return total
+
+
 # dado un vertice devuelve ordenadas sus aristas
-def ordered_edges_of_vertex(v_ini):
+def ordered_edges_of_vertex(v_ini, g):
     vecinos = []
     for v in g.succs(v_ini):
         vecinos.append((v_ini, v))
@@ -181,59 +232,23 @@ def ordered_edges_of_vertex(v_ini):
     return sorted(vecinos, key=lambda x: aristas[x])
 
 
-# este no va, hayq eu hacer lo mismo que kruskal pero en cada iteracion elegir
-def prim_final(g, v_ini, aristas):
-    q = Fifo()
-    seen = set()
-    vertices = []
-    mfs = MergeFindSet()
-
-    for v in range(len(puntos)):
-        mfs.add(v)
-
-    vertices.append(v_ini)
-    seen.add(v_ini)
-    edges = g.succs(v_ini)
-    for vecino in edges:
-        q.push((v_ini, vecino))
-
-    while len(q) > 0:
-        edge = q.pop()
-        u = edge[0]
-        v = edge[1]
-
-        if mfs.find(u) != mfs.find(v):
-            vertices.append(v)
-            mfs.merge(u, v)
-            for suc in g.succs(v):
-                if suc not in seen:
-                    seen.add((v, suc))
-                    q.push((v, suc))
-
-        return vertices
-
-
 if __name__ == '__main__':
-    nr_puntos, puntos = load_file2()
+    v_ini = 0
+    nr_puntos, puntos = load_file()
     aristas, aristas_buenas = create_graph(puntos)
-    aristas2 = dict()
-    for e, w in aristas_buenas:
-        aristas2[e] = w
-    # print("Aristas2 ",aristas2.items())
 
-    # kruskal_path = kruskal(aristas2, g)
-    # print(kruskal_path)
-    kruskal_path2 = kruskal2(aristas)
-    print(kruskal_path2)
-    print(aristas)
-    g = UndirectedGraph(E=aristas.keys())
-    print(kruskal_final(g, 0, aristas))
-    # check_distance(aristas, kruskal_path)
-    # print(shortest_edge(aristas,3,0))
-    # create_graph2(puntos)
-    # print(orden(sorted(aristas.items(), key=lambda x: x[1])))
-    # g2 = UndirectedGraph(E=aristas)
-    prim_path = prim_final(g, 0, aristas)
-    print(prim_path)
+    kruskal_path2, g_kruskal, distancia_kruskal = kruskal2(aristas)
+    kruskal_final_path = kruskal_final(g_kruskal, 0, aristas)
+    kruskal_distancia = calculate_distance(aristas, kruskal_final_path)
 
-    print(ordered_edges_of_vertex(1))
+    print(kruskal_distancia)
+    print(kruskal_final_path)
+
+    # print(kruskal_path2)
+    # print(kruskal_final_path)
+
+    prim_path, g_prim = prim2(v_ini, aristas)
+    # print(prim_path)
+
+    # ---
+    # orden(aristas.items())
