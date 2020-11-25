@@ -1,20 +1,20 @@
 import sys
-from builtins import list
 from typing import *
 import fileinput
+
 # from bt_scheme import *
 Pos = Tuple[int, int]
 
 
 def load_file():
     data = []
-    #
-    # try:
-    #     # for linea in sys.stdin.readlines():
-    #     #     print(linea)
-    #     #     data.append(str(linea))
-    # except IOError:
-    #     print("File cannot be open!")
+
+    try:
+        for linea in sys.stdin.readlines():
+            print(linea)
+            data.append(linea)
+    except IOError:
+        print("File cannot be open!")
     print(sys.stdin.read(1))
     return data
 
@@ -31,13 +31,10 @@ def load_file2():
     return data
 
 
-
-
 def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[Pos]]:
     # Averigua la posición del jugador y las posiciones iniciales y finales de las cajas
     player_pos, boxes_start, boxes_end = None, [], []
     num_rows = len(puzle_lines)
-    print(len(puzle_lines[0].strip()))
     num_cols = len(puzle_lines[0].strip())
 
     for r in range(num_rows):
@@ -58,12 +55,9 @@ def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[
     return level_map, player_pos, boxes_start, boxes_end
 
 
-def a():
-    pass
-
-
 if __name__ == '__main__':
-    datos = load_file3()
-    a,b,c,d = read_level(datos)
+    datos = load_file()
+    # print(TypeVar(datos))
+    a, b, c, d = read_level(datos)
     print(datos)
-    print(a,b,c,d )
+    # print(a, b, c, d)
