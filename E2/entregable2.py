@@ -3,9 +3,7 @@ from algoritmia.datastructures.mergefindsets import MergeFindSet
 from typing import *
 import sys
 import math
-import time
 from algoritmia.datastructures.queues import Fifo
-from algoritmia.utils import infinity
 
 Vertex = TypeVar('Vertex')
 
@@ -23,7 +21,7 @@ def load_file():
             puntos.append(punto)
     except IOError:
         print("File cannot be open!")
-    return nr_puntos, puntos
+    return int(nr_puntos), puntos
 
 
 def load_file2():
@@ -31,6 +29,7 @@ def load_file2():
     puntos = []
 
     try:
+
         f = open(sys.argv[1])
         nr_puntos = f.readline()
 
@@ -86,25 +85,12 @@ def euclidean_distance(x, y):
 
 # de entre todas las aristas no visitadas escoge la mas corta
 
-def shortest_vertex(u):
-    min_distance = infinity
-    vertice_menor = u
-    for vecino in g.succs(u):
-
-        if aristas[u, vecino] < min_distance:
-            min_distance = aristas[u, vecino]
-            vertice_menor = vecino
-
-    # print(vertice_menor)
-    return vertice_menor
-
 
 def kruskal2(aristas):
     aristas_ordenadas = sorted(aristas.items(), key=lambda x: x[1])
     mfs = MergeFindSet()
     limite = [2] * len(puntos)
     path = []
-    d = 0
     for v in range(len(puntos)):
         mfs.add(v)
 
@@ -114,7 +100,6 @@ def kruskal2(aristas):
 
         if limite[u] > 0 and limite[v] > 0:  # puedo meter la arista si no tiene ciclo
             if mfs.find(u) != mfs.find(v):  # no hace ciclo
-                d += w
                 mfs.merge(u, v)
                 path.append(edge)
                 limite[u] -= 1
@@ -125,8 +110,8 @@ def kruskal2(aristas):
             vertice_extra.append(i)
     path.append(tuple(vertice_extra))
 
-    g_kruskal = UndirectedGraph(E=path)
-    return path, g_kruskal, d
+    g = UndirectedGraph(E=path)
+    return path, g
 
 
 def menor_arista_iter(v_ini, g_prim, aristas_prim):
@@ -208,12 +193,6 @@ def kruskal_final(g, v_ini, aristas):
     return vertices
 
 
-def orden(aristas_ordenadas):
-    print("Aristas ordenadas")
-    for e, w in aristas_ordenadas:
-        print(e, w)
-
-
 def calculate_distance(aristas, path):
     # path = [0, 1, 4, 3, 2]
     total = 0
@@ -223,21 +202,12 @@ def calculate_distance(aristas, path):
     return total
 
 
-# dado un vertice devuelve ordenadas sus aristas
-def ordered_edges_of_vertex(v_ini, g):
-    vecinos = []
-    for v in g.succs(v_ini):
-        vecinos.append((v_ini, v))
-
-    return sorted(vecinos, key=lambda x: aristas[x])
-
-
 if __name__ == '__main__':
     v_ini = 0
     nr_puntos, puntos = load_file()
     aristas, aristas_buenas = create_graph(puntos)
 
-    kruskal_path2, g_kruskal, distancia_kruskal = kruskal2(aristas)
+    kruskal_path2, g_kruskal = kruskal2(aristas)
     kruskal_final_path = kruskal_final(g_kruskal, 0, aristas)
     kruskal_distancia = calculate_distance(aristas, kruskal_final_path)
 
