@@ -11,11 +11,9 @@ def load_file():
 
     try:
         for linea in sys.stdin.readlines():
-            print(linea)
             data.append(linea)
     except IOError:
         print("File cannot be open!")
-    print(sys.stdin.read(1))
     return data
 
 
@@ -57,7 +55,7 @@ def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[
 
 if __name__ == '__main__':
     datos = load_file()
-    # print(TypeVar(datos))
+
     a, b, c, d = read_level(datos)
     print(datos)
     # print(a, b, c, d)
