@@ -1,5 +1,5 @@
 # Maze Project 
 > Completed
-# Graph Kruska & Prim approach Project 
+# Graph Kruskal & Prim approach Project 
 > Incomplete
  
