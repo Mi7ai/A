@@ -57,10 +57,11 @@ def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[
 # comprobar fuera el numero de mov con la longitud de la lista
 def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
     class PuzzlePS(PartialSolution):
-        def __init__(self, ds, cajas_start):
+        def __init__(self, ds, pos_j, cajas_start):
             self.ds = ds
             self.n = len(self.ds)
             self.cajas_start = cajas_start  # se va modificando en cada iteracion
+            self.pos_j = pos_j  # se va modificando en cada iteracion
 
         def is_solution(self) -> bool:
             # comprueba si la lista de cajas_start es igual que la lista de cajas end
@@ -78,9 +79,23 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
 
         def successors(self) -> Iterable["PartialSolution"]:
             if self.n < q:
-                pass
-
-    initialps = PuzzlePS((), lista_cajas_start)
+                f = self.pos_j[0]
+                c = self.pos_j[1]
+                # mirar si puedo mover el personaje donde quiero
+                if mapa[f - 1][c] != "#":  # UP
+                    pos_j_nueva = (f-1, c)
+                    # mirar si hay caja
+                    if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
+                        # estoy con el jugador encima de una caja que tengo que ver si puedo mover
+                        # la posicion de la caja sera la posicion del jugador
+                        if mapa[pos_j_nueva[0]][pos_j_nueva[1]] != "#":  # puedo mover caja UP?
+                            # modifico posicion de la caja
+                            cajas_start_copy = self.cajas_start[:]  # copia de cajas start
+                            indice_caja = cajas_start_copy.index([pos_j_nueva[0], pos_j_nueva[1]])
+                            cajas_start_copy[indice_caja] = pos_j_nueva  # modifico la posicion de la caja
+                            yield PuzzlePS(self.ds + (0,), pos_j_nueva, cajas_start_copy)
+                    yield PuzzlePS(self.ds + (0,), pos_j_nueva, self.cajas_start)
+    initialps = PuzzlePS((), pos_jugador, lista_cajas_start)
     return BacktrackingSolver.solve(initialps)
 
 
@@ -88,11 +103,16 @@ if __name__ == '__main__':
     datos = load_file2()
 
     if len(sys.argv) > 2:
-        max_mov = sys.argv[2]
-
+        max_mov = int(sys.argv[2])
         mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
-        print(mapa, pos_jugador, lista_cajas_start, lista_cajas_end)
-        print(mapa)
+
+        f = pos_jugador[0]
+        c = pos_jugador[1]
+
+        for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
+            print(sol)
+
+
     else:
         print("Introduce el numero maximo de movimientos ")
         pass
