@@ -1,6 +1,8 @@
-import sys
+import functools
+
+from bt_scheme import PartialSolution, Solution, BacktrackingSolver
 from typing import *
-from Utils import bt_scheme
+import sys
 
 Pos = Tuple[int, int]
 
@@ -53,14 +55,17 @@ def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[
 
 
 # comprobar fuera el numero de mov con la longitud de la lista
-def puzzle_solve():
+def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
     class PuzzlePS(PartialSolution):
-        def __init__(self, ds, mapa, pos_jugador):
+        def __init__(self, ds, cajas_start):
             self.ds = ds
             self.n = len(self.ds)
+            self.cajas_start = cajas_start  # se va modificando en cada iteracion
 
         def is_solution(self) -> bool:
-            pass
+            # comprueba si la lista de cajas_start es igual que la lista de cajas end
+            return functools.reduce(lambda x, y: x and y, map(lambda p, q: p == q, self.cajas_start, lista_cajas_end),
+                                    True)
 
         def get_solution(self) -> Solution:
             return self.ds
@@ -72,17 +77,22 @@ def puzzle_solve():
         #     pass
 
         def successors(self) -> Iterable["PartialSolution"]:
-            pass
+            if self.n < q:
+                pass
 
-    initialps = PuzzlePS((), mapa, pos_jugador)
-    return BacktrackingOptSolver.solve(initialps)
+    initialps = PuzzlePS((), lista_cajas_start)
+    return BacktrackingSolver.solve(initialps)
 
 
 if __name__ == '__main__':
-    datos = load_file()
-    if sys.argv[1] != "":
-        max_mov = sys.argv[1]
-    print(max_mov)
-    mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
-    print(mapa, pos_jugador, lista_cajas_start, lista_cajas_end)
-    print(mapa[0][5])
+    datos = load_file2()
+
+    if len(sys.argv) > 2:
+        max_mov = sys.argv[2]
+
+        mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
+        print(mapa, pos_jugador, lista_cajas_start, lista_cajas_end)
+        print(mapa)
+    else:
+        print("Introduce el numero maximo de movimientos ")
+        pass
