@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
         for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
             print(sol)
-        print("Works but no sol found")
+            print("Works but no sol found")
 
     else:
         print("Introduce el numero maximo de movimientos ")
