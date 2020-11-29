@@ -20,7 +20,7 @@ def load_file():
 
 def load_file2():
     data = []
-    f = open(sys.argv[1])
+    f = open(sys.argv[2])
 
     try:
         for linea in f.readlines():
@@ -102,8 +102,8 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
 if __name__ == '__main__':
     datos = load_file2()
 
-    if len(sys.argv) > 2:
-        max_mov = int(sys.argv[2])
+    if len(sys.argv) > 1:
+        max_mov = int(sys.argv[1])
         mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
 
         f = pos_jugador[0]
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
         for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
             print(sol)
-
+        print("Works but no sol found")
 
     else:
         print("Introduce el numero maximo de movimientos ")
