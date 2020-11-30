@@ -57,6 +57,13 @@ def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[
 # comprobar fuera el numero de mov con la longitud de la lista
 def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
     class PuzzlePS(PartialSolution):
+        """
+        Parameters:
+
+        ds: lista de decisiones
+        n = longitud lista de decisiones, por comodidad
+        cajas_start: lista con las posiciones de las cajas que se van modificando donde las muevo(no se si esta bien)
+        """
         def __init__(self, ds, pos_j, cajas_start):
             self.ds = ds
             self.n = len(self.ds)
@@ -95,6 +102,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_j_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (0,), pos_j_nueva, cajas_start_copy)
+
                         # yield PuzzlePS(self.ds + (0,), pos_j_nueva, self.cajas_start)
                     # mirar si puedo mover el personaje donde quiero. RIGHT!
                     if mapa[f][c + 1] != "#":  # RIGHT
@@ -109,6 +117,8 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_j_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (1,), pos_j_nueva, cajas_start_copy)
+
+                        # yield PuzzlePS(self.ds + (1,), pos_j_nueva, self.cajas_start)
                     # mirar si puedo mover el personaje donde quiero. DOWN!
                     if mapa[f + 1][c] != "#":  # DOWN
                         pos_j_nueva = (f + 1, c)
@@ -122,6 +132,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_j_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (2,), pos_j_nueva, cajas_start_copy)
+                        # yield PuzzlePS(self.ds + (2,), pos_j_nueva, self.cajas_start)
                     # mirar si puedo mover el personaje donde quiero. LEFT!
                     if mapa[f][c - 1] != "#":  # LEFT
                         pos_j_nueva = (f, c - 1)
@@ -136,6 +147,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (3,), pos_j_nueva, cajas_start_copy)
+                        # yield PuzzlePS(self.ds + (3,), pos_j_nueva, self.cajas_start)
                     # si no encuentro ninguna caja en ninguna de las direcciones
                     # me voy a cada una de ellas, 4 lineas de yield modificando la direccion, las mismas cajas
                     # pos_j modificada para cada direccion
