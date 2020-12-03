@@ -1,4 +1,5 @@
 import functools
+import time
 
 from bt_scheme import *
 from typing import *
@@ -74,7 +75,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
         def is_solution(self) -> bool:
             # comprueba si la lista de cajas_start es igual que la lista de cajas end
             return functools.reduce(lambda x, y: x and y, map(lambda p, q: p == q, self.cajas_start, lista_cajas_end),
-                                    True)
+                                    True) and self.n == q
 
         def get_solution(self) -> Solution:
             return self.ds
@@ -83,7 +84,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
             return self.n
 
         def state(self) -> State:
-            return self.pos_j, self.n
+            return self.cajas_start[0],self.cajas_start[1], self.pos_j
 
         def successors(self) -> Iterable["PartialSolutionWithOptimization"]:
             if self.n < q:
@@ -156,16 +157,24 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                                 yield PuzzlePS(self.ds + (3,), pos_j_nueva, cajas_start_copy)
                         else:
                             yield PuzzlePS(self.ds + (3,), pos_j_nueva, self.cajas_start)
-                    # si no encuentro ninguna caja en ninguna de las direcciones
-                    # me voy a cada una de ellas, 4 lineas de yield modificando la direccion, las mismas cajas
-                    # pos_j modificada para cada direccion
-                    # yield PuzzlePS(self.ds + (0,), (f - 1, c), self.cajas_start)  # UP
-                    # yield PuzzlePS(self.ds + (1,), (f, c + 1), self.cajas_start)  # RIGHT
-                    # yield PuzzlePS(self.ds + (2,), (f + 1, c), self.cajas_start)  # DOWN
-                    # yield PuzzlePS(self.ds + (3,), (f, c - 1), self.cajas_start)  # LEFT
+
 
     initialps = PuzzlePS((), pos_jugador, lista_cajas_start)
     return BacktrackingOptSolver.solve(initialps)
+
+
+def translate(path: List):
+    new_path = []
+    for elem in path:
+        if elem == 0:
+            new_path.append("U")
+        elif elem == 1:
+            new_path.append("R")
+        elif elem == 2:
+            new_path.append("D")
+        elif elem == 3:
+            new_path.append("L")
+    return new_path
 
 
 if __name__ == '__main__':
@@ -177,10 +186,14 @@ if __name__ == '__main__':
 
         # f = pos_jugador[0]
         # c = pos_jugador[1]
-
+        a = time.time()
         for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
             print(sol)
+            print(translate(sol))
             print("Works but no sol found")
+
+        b = time.time()
+        print(b - a)
 
     else:
         print("Introduce el numero maximo de movimientos ")
