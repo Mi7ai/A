@@ -1,8 +1,7 @@
-import functools
-import time
-
 from bt_scheme import *
 from typing import *
+import functools
+import time
 import sys
 
 Pos = Tuple[int, int]
@@ -170,19 +169,6 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
     return BacktrackingOptSolver.solve(initialps)
 
 
-def translate(path: List):
-    new_path = []
-    for elem in path:
-        if elem == 0:
-            new_path.append("U")
-        elif elem == 1:
-            new_path.append("R")
-        elif elem == 2:
-            new_path.append("D")
-        elif elem == 3:
-            new_path.append("L")
-    return new_path
-
 
 if __name__ == '__main__':
     datos = load_file2()
@@ -193,8 +179,6 @@ if __name__ == '__main__':
 
         f = pos_jugador[0]
         c = pos_jugador[1]
-
-
 
         a = time.time()
         sols = []
