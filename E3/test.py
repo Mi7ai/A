@@ -26,9 +26,21 @@ class Test2():
         print(c.index((0,0)))
 
 
+class Test3():
+    def a(self):
+        r = 10.9
+        t = 15.73
+
+        print(10*min(1,r/t))
+
+
+
 if __name__ == '__main__':
-    test1 = Test1()
-    print(test1.a())
+    # test1 = Test1()
+    # print(test1.a())
 
     # test2 = Test2()
     # test2.a()
+
+    test3 = Test3()
+    print(test3.a())

@@ -1,7 +1,6 @@
 from bt_scheme import *
 from typing import *
 import functools
-import time
 import sys
 
 Pos = Tuple[int, int]
@@ -73,10 +72,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
 
         def is_solution(self) -> bool:
             # comprueba si la lista de cajas_start es igual que la lista de cajas end
-            return functools.reduce(lambda x, y: x and y, map(lambda a, b: a == b, self.cajas_start, lista_cajas_end),
-                                    True)
-
-            # if self.cajas_start not in lista_cajas_start: return False
+            return functools.reduce(lambda x, y: x and y, map(lambda a, b: a == b, self.cajas_start, lista_cajas_end), True)
 
         def get_solution(self) -> Solution:
             return self.ds
@@ -101,7 +97,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
                             pos_caja_nueva = (pos_j_nueva[0] - 1, pos_j_nueva[1])
-                            if mapa[pos_j_nueva[0] - 1][pos_j_nueva[1]] != "#":  # puedo mover caja UP?
+                            if mapa[pos_j_nueva[0] - 1][pos_j_nueva[1]] != "#" and (pos_j_nueva[0] - 1, pos_j_nueva[1]) not in self.cajas_start:  # puedo mover caja UP?
 
                                 # modifico posicion de la caja
                                 cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
@@ -119,7 +115,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
                             pos_caja_nueva = (pos_j_nueva[0] + 1, pos_j_nueva[1])
-                            if mapa[pos_j_nueva[0] + 1][pos_j_nueva[1]] != "#":  # puedo mover caja DOWN?
+                            if mapa[pos_j_nueva[0] + 1][pos_j_nueva[1]] != "#" and (pos_j_nueva[0] + 1, pos_j_nueva[1]) not in self.cajas_start:  # puedo mover caja DOWN?
 
                                 # modifico posicion de la caja
                                 cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
@@ -136,7 +132,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
                             pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] + 1)
-                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] + 1] != "#":  # puedo mover caja RIGHT?
+                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] + 1] != "#" and (pos_j_nueva[0], pos_j_nueva[1] + 1) not in self.cajas_start:  # puedo mover caja RIGHT?
 
                                 # modifico posicion de la caja
                                 cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
@@ -155,7 +151,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
                             pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] - 1)
-                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] - 1] != "#":  # puedo mover caja LEFT?
+                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] - 1] != "#" and (pos_j_nueva[0], pos_j_nueva[1] - 1) not in self.cajas_start:  # puedo mover caja LEFT?
 
                                 # modifico posicion de la caja
                                 cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
@@ -169,7 +165,6 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
     return BacktrackingOptSolver.solve(initialps)
 
 
-
 if __name__ == '__main__':
     datos = load_file2()
 
@@ -177,16 +172,11 @@ if __name__ == '__main__':
         max_mov = int(sys.argv[1])
         mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
 
-        f = pos_jugador[0]
-        c = pos_jugador[1]
+        solucion = list(puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end))
 
-        a = time.time()
-        sols = []
-        for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
-            sols.append(sol)
-        print(*sols[-1], sep="")
-        b = time.time()
-        print(b - a)
-
+        if len(solucion) == 0:
+            print("NO HAY SOLUCIÓN CON LOS MOVIMIENTOS PEDIDOS")
+        else:
+            print(*solucion[-1], sep="")
     else:
-        print("Introduce el numero maximo de movimientos ")
+        print("Introduce el numero maximo de movimientos")
