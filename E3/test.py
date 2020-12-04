@@ -8,7 +8,10 @@ class Test1():
         l1 = [(1, 7), (4, 4)]
         l2 = [(1, 7), (4, 4)]
 
-        return functools.reduce(lambda x, y: x and y, map(lambda p, q: p == q, l1, l2), True)
+
+
+        print(l1 in l2)
+        return functools.reduce(lambda x, y: x and y, map(lambda a, b: a == b, l1, l2), True)
 
 
 class Test2():
@@ -24,8 +27,8 @@ class Test2():
 
 
 if __name__ == '__main__':
-    # test1 = Test1()
-    # print(test1.a())
+    test1 = Test1()
+    print(test1.a())
 
-    test2 = Test2()
-    test2.a()
+    # test2 = Test2()
+    # test2.a()

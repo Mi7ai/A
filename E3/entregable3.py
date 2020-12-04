@@ -69,13 +69,15 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
         def __init__(self, ds, pos_j, cajas_start):
             self.ds = ds
             self.n = len(self.ds)
-            self.cajas_start = cajas_start  # se va modificando en cada iteracion
+            self.cajas_start = tuple(cajas_start)  # se va modificando en cada iteracion
             self.pos_j = pos_j  # se va modificando en cada iteracion
 
         def is_solution(self) -> bool:
             # comprueba si la lista de cajas_start es igual que la lista de cajas end
-            return functools.reduce(lambda x, y: x and y, map(lambda p, q: p == q, self.cajas_start, lista_cajas_end),
-                                    True) and self.n == q
+            return functools.reduce(lambda x, y: x and y, map(lambda a, b: a == b, self.cajas_start, lista_cajas_end),
+                                    True)
+
+            # if self.cajas_start not in lista_cajas_start: return False
 
         def get_solution(self) -> Solution:
             return self.ds
@@ -84,13 +86,14 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
             return self.n
 
         def state(self) -> State:
-            return self.cajas_start[0],self.cajas_start[1], self.pos_j
+            return (self.cajas_start, self.pos_j)
 
         def successors(self) -> Iterable["PartialSolutionWithOptimization"]:
             if self.n < q:
                 f = self.pos_j[0]
                 c = self.pos_j[1]
-                if 0 < f < len(mapa[len(mapa) - 1]) and 0 < c < len(mapa[0]) - 1:  # que se quede dentro del puzzle
+
+                if 0 < f < len(mapa)-1 and 0 < c < len(mapa[0]) - 1:  # que se quede dentro del puzzle
                     # mirar si puedo mover el personaje donde quiero. UP!
                     if mapa[f - 1][c] != "#":  # UP
                         pos_j_nueva = (f - 1, c)
@@ -98,33 +101,17 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                         if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
+                            pos_caja_nueva = (pos_j_nueva[0] - 1, pos_j_nueva[1])
                             if mapa[pos_j_nueva[0] - 1][pos_j_nueva[1]] != "#":  # puedo mover caja UP?
-                                pos_caja_nueva = (pos_j_nueva[0] - 1, pos_j_nueva[1])
+
                                 # modifico posicion de la caja
-                                cajas_start_copy = self.cajas_start[:]  # copia de cajas start
+                                cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (0,), pos_j_nueva, cajas_start_copy)
 
                         else:
                             yield PuzzlePS(self.ds + (0,), pos_j_nueva, self.cajas_start)
-                    # mirar si puedo mover el personaje donde quiero. RIGHT!
-                    if mapa[f][c + 1] != "#":  # RIGHT
-                        pos_j_nueva = (f, c + 1)
-                        # mirar si hay caja
-                        if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
-                            # estoy con el jugador encima de una caja que tengo que ver si puedo mover
-                            # la posicion de la caja sera la posicion del jugador
-                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] + 1] != "#":  # puedo mover caja RIGHT?
-                                pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] + 1)
-                                # modifico posicion de la caja
-                                cajas_start_copy = self.cajas_start[:]  # copia de cajas start
-                                indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
-                                cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
-                                yield PuzzlePS(self.ds + (1,), pos_j_nueva, cajas_start_copy)
-
-                        else:
-                            yield PuzzlePS(self.ds + (1,), pos_j_nueva, self.cajas_start)
                     # mirar si puedo mover el personaje donde quiero. DOWN!
                     if mapa[f + 1][c] != "#":  # DOWN
                         pos_j_nueva = (f + 1, c)
@@ -132,15 +119,35 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                         if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
+                            pos_caja_nueva = (pos_j_nueva[0] + 1, pos_j_nueva[1])
                             if mapa[pos_j_nueva[0] + 1][pos_j_nueva[1]] != "#":  # puedo mover caja DOWN?
-                                pos_caja_nueva = (pos_j_nueva[0] + 1, pos_j_nueva[1])
+
                                 # modifico posicion de la caja
-                                cajas_start_copy = self.cajas_start[:]  # copia de cajas start
+                                cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
-                                yield PuzzlePS(self.ds + (2,), pos_j_nueva, cajas_start_copy)
+                                yield PuzzlePS(self.ds + (2,), pos_j_nueva, tuple(cajas_start_copy))
                         else:
                             yield PuzzlePS(self.ds + (2,), pos_j_nueva, self.cajas_start)
+                    # mirar si puedo mover el personaje donde quiero. RIGHT!
+                    if mapa[f][c + 1] != "#":  # RIGHT
+                        pos_j_nueva = (f, c + 1)
+                        # mirar si hay caja
+                        if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
+                            # estoy con el jugador encima de una caja que tengo que ver si puedo mover
+                            # la posicion de la caja sera la posicion del jugador
+                            pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] + 1)
+                            if mapa[pos_j_nueva[0]][pos_j_nueva[1] + 1] != "#":  # puedo mover caja RIGHT?
+
+                                # modifico posicion de la caja
+                                cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
+                                indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
+                                cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
+                                yield PuzzlePS(self.ds + (1,), pos_j_nueva, cajas_start_copy)
+
+                        else:
+                            yield PuzzlePS(self.ds + (1,), pos_j_nueva, self.cajas_start)
+
                     # mirar si puedo mover el personaje donde quiero. LEFT!
                     if mapa[f][c - 1] != "#":  # LEFT
                         pos_j_nueva = (f, c - 1)
@@ -148,18 +155,18 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
                         if pos_j_nueva in self.cajas_start:  # saber si tienes la pos del jugador en cajas
                             # estoy con el jugador encima de una caja que tengo que ver si puedo mover
                             # la posicion de la caja sera la posicion del jugador
+                            pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] - 1)
                             if mapa[pos_j_nueva[0]][pos_j_nueva[1] - 1] != "#":  # puedo mover caja LEFT?
-                                pos_caja_nueva = (pos_j_nueva[0], pos_j_nueva[1] - 1)
+
                                 # modifico posicion de la caja
-                                cajas_start_copy = self.cajas_start[:]  # copia de cajas start
+                                cajas_start_copy = list(self.cajas_start[:])  # copia de cajas start
                                 indice_caja = cajas_start_copy.index((pos_j_nueva[0], pos_j_nueva[1]))
                                 cajas_start_copy[indice_caja] = pos_caja_nueva  # modifico la posicion de la caja
                                 yield PuzzlePS(self.ds + (3,), pos_j_nueva, cajas_start_copy)
                         else:
                             yield PuzzlePS(self.ds + (3,), pos_j_nueva, self.cajas_start)
 
-
-    initialps = PuzzlePS((), pos_jugador, lista_cajas_start)
+    initialps = PuzzlePS((), pos_jugador, tuple(lista_cajas_start))
     return BacktrackingOptSolver.solve(initialps)
 
 
@@ -184,13 +191,16 @@ if __name__ == '__main__':
         max_mov = int(sys.argv[1])
         mapa, pos_jugador, lista_cajas_start, lista_cajas_end = read_level(datos)
 
-        # f = pos_jugador[0]
-        # c = pos_jugador[1]
+        f = pos_jugador[0]
+        c = pos_jugador[1]
+
+
+
         a = time.time()
         for sol in puzzle_solve(mapa, pos_jugador, max_mov, lista_cajas_start, lista_cajas_end):
             print(sol)
-            print(translate(sol))
-            print("Works but no sol found")
+            # print(translate(sol))
+            # print("Works but no sol found")
 
         b = time.time()
         print(b - a)
