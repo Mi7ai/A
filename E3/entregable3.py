@@ -166,7 +166,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
 
 
 if __name__ == '__main__':
-    datos = load_file2()
+    datos = load_file()
 
     if len(sys.argv) > 1:
         max_mov = int(sys.argv[1])
