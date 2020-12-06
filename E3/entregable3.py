@@ -28,6 +28,18 @@ def load_file2():
         print("File cannot be open!")
     return data
 
+def cajasEsquina(cajas , mapa, lista_cajas_end):
+    for caja in cajas:
+        if caja not in lista_cajas_end:
+            if mapa[caja[0] + 1][caja[1]] == '#' and mapa[caja[0]][caja[1] - 1] == '#':
+                return True
+            if mapa[caja[0] + 1][caja[1]] == '#' and mapa[caja[0]][caja[1] + 1] == '#':
+                return True
+            if mapa[caja[0] - 1][caja[1]] == '#' and mapa[caja[0]][caja[1] - 1] == '#':
+                return True
+            if mapa[caja[0] - 1][caja[1]] == '#' and mapa[caja[0]][caja[1] + 1] == '#':
+                return True
+    return False
 
 def read_level(puzle_lines: List[str]) -> Tuple[List[str], Pos, List[Pos], List[Pos]]:
     # Averigua la posición del jugador y las posiciones iniciales y finales de las cajas
@@ -84,7 +96,7 @@ def puzzle_solve(mapa, pos_jugador, q, lista_cajas_start, lista_cajas_end):
             return (self.cajas_start, self.pos_j)
 
         def successors(self) -> Iterable["PartialSolutionWithOptimization"]:
-            if self.n < q:
+            if self.n < q and not cajasEsquina(self.cajas_start, mapa, lista_cajas_end):
                 f = self.pos_j[0]
                 c = self.pos_j[1]
 
