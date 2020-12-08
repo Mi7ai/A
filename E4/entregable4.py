@@ -39,12 +39,13 @@ class FunambulistaProblem(IDivideAndConquerProblem):
         return len(self.edificios) <= 1
 
     def trivial_solution(self) -> "Solution":
-        pass
+        self.edificios  # not sure about this one
 
-    def divide(self) -> "Iterable<IDivideAndConquerProblem>":
-        pass
+    def divide(self) -> "Iterable[IDivideAndConquerProblem]":
+        yield FunambulistaProblem(self.edificios[:len(self.edificios) // 2])
+        yield FunambulistaProblem(self.edificios[len(self.edificios) // 2:])
 
-    def combine(self, solutions: "Iterable<Solution>") -> "Solution":
+    def combine(self, solutions: "Iterable[Solution]") -> "Solution":
         pass
 
 
