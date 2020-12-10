@@ -19,13 +19,14 @@ def load_file():
 
 def load_file2():
     data = []
+    alturas = []
     nr_edificios = 0
     f = open(sys.argv[1])
 
     try:
         nr_edificios = f.readline()
         for linea in f.readlines():
-            data.append(int(linea))
+            data.append(list(linea.strip()))
     except IOError:
         print("File cannot be open!")
     return int(nr_edificios), data

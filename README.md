@@ -1,7 +1,8 @@
 # Maze Project 
 > Completed
 # Graph Kruskal & Prim approach Project 
-> Incomplete
+> Incomplete 
 # Sokoban with Backtracking Project 
-> In progress
- 
+> Complete
+# Funambulist Divide and Conquer Project 
+> Inccomplete
