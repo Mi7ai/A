@@ -22,7 +22,6 @@ class PowerSolver(IDivideAndConquerProblem):
         a, b = tuple(solutions)
         pow = a * b
 
-
         return pow
 
 
