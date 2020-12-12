@@ -6,22 +6,36 @@ from typing import *
 
 def suma_max(v: List[int], b: int, e: int):
     suma = 0
+
     def _suma_max(b, e):
-
-
-        if (e-b)//2 == 0:
+        num_elem = e - b
+        if num_elem == 0:
+            return 0
+        if num_elem == 1:
             return v[b]
         else:
-
-            suma = _suma_max(b, (e-b)//2) + _suma_max((e-b)//2, e)
-            # p1 = _suma_max(b, (e-b)//2)
-            # p1 += _suma_max((e-b)//2, e)
+            L = _suma_max(b, (e + b) // 2)
+            R = _suma_max((e + b) // 2, e)
+            suma = L + R
         return suma
+
     return _suma_max(b, e)
 
 
+def s(v, b, e):
+    if b == e:
+        return v[b]
+
+    mid = (b + e) // 2
+
+    L = s(v, b, mid) + s(v, mid, e)
+    R = s(v, mid, e)
+
+    return max(L, R)
+
+
 if __name__ == '__main__':
-    v = [1,2,3,4,5]
+    v = [-1, 3, 4, -5, 9, -2]
     b = 0
-    e = 5
-    print(suma_max(v,b,e))
+    e = len(v)
+    print(suma_max(v, b, e))

@@ -3,6 +3,7 @@ def slice(a):
 
     print("indice 0 -",len(a) // 2)
     print("mid1",a[:len(a) // 2])
+    print("***")
     print("indice ", len(a) // 2,"",len(a))
     print("mid2",a[len(a) // 2:])
 
@@ -11,8 +12,9 @@ def slice(a):
         print("---")
         slice(a[len(a) // 2:])
 
+
 if __name__ == '__main__':
-    a = [1,-2,3,4,-5]
+    a = [-1, 3, 4, -5, 9, -2]
     slice(a)
 
 

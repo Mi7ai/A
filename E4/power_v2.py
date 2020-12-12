@@ -4,5 +4,7 @@ def power(a, b):
     else:
         pow = power(a, b // 2) * power(a, b // 2)
     return pow
+
+
 if __name__ == '__main__':
     print(power(2, 2))
