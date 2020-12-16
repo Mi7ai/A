@@ -1,7 +1,6 @@
-import sys
-
 from algoritmia.schemes.divideandconquer import IDivideAndConquerProblem, DivideAndConquerSolver
 from typing import TypeVar, List
+import sys
 
 T = TypeVar('T')
 
@@ -76,7 +75,7 @@ class FunambulistaProblem(IDivideAndConquerProblem):
             i += 1
 
         while j < len(right):
-             j += 1
+            j += 1
 
         return (self.ileft, self.iright)
 
