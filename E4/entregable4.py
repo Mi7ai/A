@@ -64,16 +64,17 @@ class FunambulistaProblem(IDivideAndConquerProblem):
             maxright = bestright[0]
             self.e = maxright
         else:
-            maxleft = bestleft[0]
-            maxright = bestright[0]
             for elem in bestleft:
                 if elem > maxleft:
                     maxleft = elem
+
+
             self.b = maxleft
 
             for elem in bestright:
-                if elem > maxright:
+                if maxleft < elem:
                     maxright = elem
+
             self.e = maxright
 
 
