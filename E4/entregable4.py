@@ -21,70 +21,63 @@ def load_file2():
     alturas = []
     nr_edificios = 0
     f = open(sys.argv[1])
-    # TODO: list must contain integer not strings!!!
+
     try:
         nr_edificios = f.readline()
         for linea in f.readlines():
-            # data.append(list(linea.strip()))
             for alt in linea.strip():
                 data.append(int(alt))
+            alturas.append(data)
+            data = []
+
     except IOError:
         print("File cannot be open!")
-    return int(nr_edificios), data
+    return int(nr_edificios), alturas
 
 
 class FunambulistaProblem(IDivideAndConquerProblem):
-    def __init__(self, edificios: List[int], b, e ):
+    def __init__(self, edificios: List[int], b, e):
         self.edificios = edificios
+        self.b = b
+        self.e = e
 
     def is_simple(self) -> "bool":
         return len(self.edificios) <= 1
 
     def trivial_solution(self) -> "Solution":
+
         return self.edificios  # not sure about this one
 
     def divide(self) -> "Iterable[IDivideAndConquerProblem]":
-        yield FunambulistaProblem(self.edificios[:len(self.edificios) // 2])
-        yield FunambulistaProblem(self.edificios[len(self.edificios) // 2:])
+        yield FunambulistaProblem(self.edificios[:len(self.edificios) // 2], 0, 0)
+        yield FunambulistaProblem(self.edificios[len(self.edificios) // 2:], 0, 0)
 
     def combine(self, solutions: "Iterable[Solution]") -> "Solution":
-        bestleft, bestright = tuple(solutions)
-        #TODO: base cases o and 1 length
-        bleft = 0
-        eleft = bestleft[-1]
-        bright = bestright[0]
-        eright = bestright[-1]
-        #TODO: calcular el punto medio
+        bestleft, bestright = tuple(solutions)  # string list numbers
 
-        # ---
-        if bestleft == 1:
-             h = 0
-        if bestright == 1:
-            h = 0
-        # ---
-        # h = (b + e) // 2
-        suma_acum = 0
-        ind_b = h
-        ind_e = h
-        max_sum = 0
+        maxleft, maxright = 0, 0
 
-        for i in range(h - 1, self.b - 1, -1):
-            suma_acum += lista_edificios[i]
-            if suma_acum > max_sum:
-                ind_b = i
-                max_sum = suma_acum
+        if len(bestleft) == 1:
+            maxleft = bestleft[0]
+            self.b = maxleft
+        if len(bestright) == 1:
+            maxright = bestright[0]
+            self.e = maxright
+        else:
+            maxleft = bestleft[0]
+            maxright = bestright[0]
+            for elem in bestleft:
+                if elem > maxleft:
+                    maxleft = elem
+            self.b = maxleft
 
-        suma_acum = max_sum
+            for elem in bestright:
+                if elem > maxright:
+                    maxright = elem
+            self.e = maxright
 
-        for i in range(h, self.e):
-            suma_acum += lista_edificios[i]
-            if suma_acum > max_sum:
-                ind_e = i
-                max_sum = suma_acum
 
-        bestcentre = (max_sum, ind_b, ind_e)
-
-        return max(bestleft, bestright, bestcentre)
+        return maxleft, maxright
 
     # def combine(self, solutions: "Iterable[Solution]") -> "Solution":
     #     left, right = tuple(solutions)
@@ -124,6 +117,6 @@ if __name__ == '__main__':
     print(lista_edificios)
     print("---")
     for lista_alturas in lista_edificios:
-        problem = FunambulistaProblem(lista_alturas, 0, len(lista_edificios))
+        problem = FunambulistaProblem(lista_alturas, 0, 0)
         solution = DivideAndConquerSolver().solve(problem)
         print(solution)
