@@ -1,5 +1,5 @@
 from algoritmia.schemes.divideandconquer import IDivideAndConquerProblem, DivideAndConquerSolver
-from typing import TypeVar, List
+from typing import TypeVar, List 
 import sys
 
 T = TypeVar('T')
