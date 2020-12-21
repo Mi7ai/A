@@ -90,16 +90,16 @@ def funambulista(lista_edificios):  # la altura, indices del primer edificio, de
 					return der
 
 			if izq[0] == centro[0] and izq[0] > der[0]:
-				if izq[3] < der[3]:
+				if izq[3] < centro[3]:
 					return izq
 				else:
-					return der
+					return centro
 
 			if der[0] == centro[0] and der[0] > izq[0]:
-				if izq[3] < der[3]:
-					return izq
-				else:
+				if der[3] < centro[3]:
 					return der
+				else:
+					return centro
 
 			if izq[0] == der[0] == centro[0]:
 				if izq[3] < centro[3]:
