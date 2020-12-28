@@ -20,7 +20,6 @@ def load_file2():
 
 	f = open(sys.argv[1])
 
-
 	try:
 		filas, columnas = f.readline().split(" ")
 		diamantes = f.readline()
@@ -30,23 +29,26 @@ def load_file2():
 			data.append([int(fila_diamante), int(col_diamante), int(valor_diamante)])
 	except IOError:
 		print("File cannot be open!")
-	return filas, columnas, data
+	return filas, columnas, int(diamantes), data
 
 
-def diamante_rec(v: List[int], w: List[int], C: int) -> int:
+def diamante_rec(N: int, C: int, V: List[List[int]]) -> int:
+	"""
+	:param N: cantidad diamantes
+	:param C: suma valores diamantes
+	:return: beneficio maximo
+	"""
+
 	def B(n: int, c: int) -> int:
 		# --------------------
 		if n == 0:
 			return 0
-		if w[n - 1] <= c:  # si el peso del objeto <= capacidad mochila
-			# miro el objeto anterior con la misma capacidad
-			# miro el objeto anterior con con ca capacidad - el peso del objeto + el valor del objeto
-			return max(B(n - 1, c), B(n - 1, c - w[n - 1]) + v[n - 1])
-		# si no cabe, miro el objeto anterior con la misma capacidad
-		return B(n - 1, c)
-		# --------------------
-
-	N = len(v)
+		if (n, c) not in mem:
+			if V[n - 1][2] <= c:
+				mem[n, c] = max(B(n - 1, c - d * V[n - 1][2]) + d * V[n - 1][2] for d in range(2))
+		return mem[n, c]
+	# --------------------
+	mem = {}
 	return B(N, C)
 
 
@@ -55,7 +57,12 @@ if __name__ == '__main__':
 	weights = [4, 3, 3, 2, 2]
 	capacity = 3
 
-	print("Versión recursiva:")
-	print(diamante_rec(values, weights, capacity))
-	filas, columnas, diamantes = load_file2()
-	# print("{}, {}, {}".format(filas, columnas, diamantes))
+	# print("Versión recursiva:")
+	# print(diamante_rec(values, weights, capacity))
+	filas, columnas, cantidad_diamantes, diamantes = load_file2()
+	suma_diamantes = 0
+
+	for f, c, valor in diamantes:
+		suma_diamantes += valor
+	print(diamante_rec(cantidad_diamantes, suma_diamantes, diamantes))
+# print("{}, {}, {}".format(filas, columnas, diamantes))
