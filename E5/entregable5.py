@@ -41,15 +41,69 @@ def diamante_rec(N: int, C: int, V: List[List[int]]) -> int:
 
 	def B(n: int, c: int) -> int:
 		# --------------------
+
 		if n == 0:
 			return 0
 		if (n, c) not in mem:
 			if V[n - 1][2] <= c:
 				mem[n, c] = max(B(n - 1, c - d * V[n - 1][2]) + d * V[n - 1][2] for d in range(2))
+			else:
+				mem[n, c] = B(n - 1, c)
 		return mem[n, c]
+
 	# --------------------
 	mem = {}
 	return B(N, C)
+
+
+def diamante_iter(N, C, V):
+	"""
+
+	:param N: cantidad diamantes
+	:param C: suma valores diamantes
+	:param V: vector con fila, columna, valor_diamante
+	:return:
+	"""
+	mem = {}
+	for n in range(N + 1):
+		for c in range(C + 1):
+			if n == 0:
+				mem[n, c] = (0, None)
+			if (n, c) not in mem:
+				if V[n - 1][2] <= C:
+					# n_previo = (mem[n - 1, c])
+					# n_anterior = (mem[n - 1, c - 1 * V[n - 1][2]] + 1 * V[n - 1][2])
+					mem[n, c] = max((mem[n - 1, c][0]),
+									(mem[n - 1, c - V[n - 1][2]][0] + V[n - 1][2]))
+				else:
+					mem[n, c] = (mem[n - 1, c][0])
+	score = mem[n, c][0]
+
+	return score
+
+
+# checks if the square is out of the grid
+def valid_square(M, N, row, col, V: List[List[int]]) -> bool:
+	"""
+	:param row: fila que quiero comprobar
+	:param col: columna que quiero comprobar
+	:param V:
+	:param M: filas matriz
+	:param N: columnas matriz
+	:return:
+	"""
+	if row > M or col > N: return False
+	return True
+
+
+# checks weather the row, col is at the end
+def is_end_square(M, N, row, col):
+	if row == M - 1 and col == N - 1: return True
+	return False
+
+
+def diamante_test(N: int, C: int, V: List[List[int]]):
+	pass
 
 
 if __name__ == '__main__':
@@ -65,4 +119,5 @@ if __name__ == '__main__':
 	for f, c, valor in diamantes:
 		suma_diamantes += valor
 	print(diamante_rec(cantidad_diamantes, suma_diamantes, diamantes))
-# print("{}, {}, {}".format(filas, columnas, diamantes))
+	# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
+	# print("{}, {}, {}".format(filas, columnas, diamantes))
