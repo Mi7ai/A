@@ -3,6 +3,8 @@
 # Graph Kruskal & Prim approach Project 
 > Incomplete 
 # Sokoban with Backtracking Project 
-> Complete
+> Completed
 # Funambulist Divide and Conquer Project 
-> Inccomplete
+> Completed
+# Best Benefit Path
+> Incomplete
