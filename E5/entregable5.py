@@ -2,6 +2,7 @@ import sys
 from typing import *
 
 
+# TODO: edit for this exercise
 def load_file():
 	data = []
 	nr_edificios = 0
@@ -15,8 +16,7 @@ def load_file():
 
 
 def load_file2():
-	data = []
-	nr_edificios = 0
+	data = dict()
 
 	f = open(sys.argv[1])
 
@@ -25,11 +25,11 @@ def load_file2():
 		diamantes = f.readline()
 		for linea in f.readlines():
 			fila_diamante, col_diamante, valor_diamante = linea.split(" ")
-
-			data.append([int(fila_diamante), int(col_diamante), int(valor_diamante)])
+			# data.append([int(fila_diamante), int(col_diamante), int(valor_diamante)])
+			data[int(fila_diamante), int(col_diamante)] = int(valor_diamante)
 	except IOError:
 		print("File cannot be open!")
-	return filas, columnas, int(diamantes), data
+	return int(filas), int(columnas), int(diamantes), data
 
 
 def diamante_rec(N: int, C: int, V: List[List[int]]) -> int:
@@ -56,34 +56,36 @@ def diamante_rec(N: int, C: int, V: List[List[int]]) -> int:
 	return B(N, C)
 
 
-def diamante_iter(N, C, V):
+def diamante_rec2(f, c, V: dict) -> int:
+	"""
+	:param M: filas matriz
+	:param N: columnas matriz
+	:param V: matriz con valores de los diamantes o cero si la celda esta vacia
+	:return: beneficio maximo
 	"""
 
-	:param N: cantidad diamantes
-	:param C: suma valores diamantes
-	:param V: vector con fila, columna, valor_diamante
-	:return:
-	"""
+	def B(f: int, c: int) -> int:
+		# --------------------
+
+		if not is_valid_square(f, c):
+			return 0
+
+		if is_end_square(f, c):
+			# devuelve el valor
+			valor = V[f, c]
+			return valor
+
+		if (f, c) not in mem:
+			mem[f, c] = B(f + 1, c) + B(f, c + 1)
+		return mem[f, c]
+
+	# --------------------
 	mem = {}
-	for n in range(N + 1):
-		for c in range(C + 1):
-			if n == 0:
-				mem[n, c] = (0, None)
-			if (n, c) not in mem:
-				if V[n - 1][2] <= C:
-					# n_previo = (mem[n - 1, c])
-					# n_anterior = (mem[n - 1, c - 1 * V[n - 1][2]] + 1 * V[n - 1][2])
-					mem[n, c] = max((mem[n - 1, c][0]),
-									(mem[n - 1, c - V[n - 1][2]][0] + V[n - 1][2]))
-				else:
-					mem[n, c] = (mem[n - 1, c][0])
-	score = mem[n, c][0]
-
-	return score
+	return B(f, c)
 
 
 # checks if the square is out of the grid
-def valid_square(M, N, row, col, V: List[List[int]]) -> bool:
+def is_valid_square(row, col) -> bool:
 	"""
 	:param row: fila que quiero comprobar
 	:param col: columna que quiero comprobar
@@ -97,13 +99,27 @@ def valid_square(M, N, row, col, V: List[List[int]]) -> bool:
 
 
 # checks weather the row, col is at the end
-def is_end_square(M, N, row, col):
+def is_end_square(row, col):
 	if row == M - 1 and col == N - 1: return True
 	return False
 
 
 def diamante_test(N: int, C: int, V: List[List[int]]):
 	pass
+
+
+# creates a dictionary in which the empty cells have value -1
+
+
+def fill_dict():
+	grid = dict()
+	for f in range(M):
+		for c in range(N):
+			if (f, c) not in diamantes:
+				grid[f, c] = 0
+			else:
+				grid[f, c] = diamantes.get((f, c))
+	return grid
 
 
 if __name__ == '__main__':
@@ -113,11 +129,16 @@ if __name__ == '__main__':
 
 	# print("Versión recursiva:")
 	# print(diamante_rec(values, weights, capacity))
-	filas, columnas, cantidad_diamantes, diamantes = load_file2()
-	suma_diamantes = 0
 
-	for f, c, valor in diamantes:
-		suma_diamantes += valor
-	print(diamante_rec(cantidad_diamantes, suma_diamantes, diamantes))
-	# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
-	# print("{}, {}, {}".format(filas, columnas, diamantes))
+	M, N, cantidad_diamantes, diamantes = load_file2()
+	print(sum(diamantes.values()))
+	# suma_diamantes = 0
+
+	# for f, c in diamantes.keys():
+	# 	suma_diamantes += diamantes[f, c]
+	grid = fill_dict()
+	# print(grid)
+# print(diamante_rec(cantidad_diamantes, suma_diamantes, diamantes))
+print(diamante_rec2(0, 0, grid))
+# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
+# print("{}, {}, {}".format(filas, columnas, diamantes))
