@@ -32,30 +32,6 @@ def load_file2():
 	return int(filas), int(columnas), int(diamantes), data
 
 
-def diamante_rec(N: int, C: int, V: List[List[int]]) -> int:
-	"""
-	:param N: cantidad diamantes
-	:param C: suma valores diamantes
-	:return: beneficio maximo
-	"""
-
-	def B(n: int, c: int) -> int:
-		# --------------------
-
-		if n == 0:
-			return 0
-		if (n, c) not in mem:
-			if V[n - 1][2] <= c:
-				mem[n, c] = max(B(n - 1, c - d * V[n - 1][2]) + d * V[n - 1][2] for d in range(2))
-			else:
-				mem[n, c] = B(n - 1, c)
-		return mem[n, c]
-
-	# --------------------
-	mem = {}
-	return B(N, C)
-
-
 def diamante_rec2(f, c, V: dict) -> int:
 	"""
 	:param M: filas matriz
@@ -69,18 +45,17 @@ def diamante_rec2(f, c, V: dict) -> int:
 
 		if not is_valid_square(f, c):
 			return 0
-
+		if is_valid_square(f, c):
+			return V[f, c] + max(B(f + 1, c), B(f, c + 1))
 		if is_end_square(f, c):
 			# devuelve el valor
 			valor = V[f, c]
 			return valor
 
-		if (f, c) not in mem:
-			mem[f, c] = B(f + 1, c) + B(f, c + 1)
-		return mem[f, c]
-
 	# --------------------
 	mem = {}
+	suma_diamantes = 0
+	a = 0
 	return B(f, c)
 
 
@@ -89,13 +64,13 @@ def is_valid_square(row, col) -> bool:
 	"""
 	:param row: fila que quiero comprobar
 	:param col: columna que quiero comprobar
-	:param V:
 	:param M: filas matriz
 	:param N: columnas matriz
 	:return:
 	"""
-	if row > M or col > N: return False
-	return True
+	if row < M and col < N:
+		return True
+	return False
 
 
 # checks weather the row, col is at the end
@@ -104,13 +79,7 @@ def is_end_square(row, col):
 	return False
 
 
-def diamante_test(N: int, C: int, V: List[List[int]]):
-	pass
-
-
 # creates a dictionary in which the empty cells have value -1
-
-
 def fill_dict():
 	grid = dict()
 	for f in range(M):
@@ -123,22 +92,10 @@ def fill_dict():
 
 
 if __name__ == '__main__':
-	values = [90, 75, 60, 20, 10]
-	weights = [4, 3, 3, 2, 2]
-	capacity = 3
-
-	# print("Versión recursiva:")
-	# print(diamante_rec(values, weights, capacity))
-
 	M, N, cantidad_diamantes, diamantes = load_file2()
-	print(sum(diamantes.values()))
-	# suma_diamantes = 0
 
-	# for f, c in diamantes.keys():
-	# 	suma_diamantes += diamantes[f, c]
 	grid = fill_dict()
 	# print(grid)
-# print(diamante_rec(cantidad_diamantes, suma_diamantes, diamantes))
-print(diamante_rec2(0, 0, grid))
-# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
-# print("{}, {}, {}".format(filas, columnas, diamantes))
+	print(diamante_rec2(0, 0, grid))
+	# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
+	# print("{}, {}, {}".format(filas, columnas, diamantes))
