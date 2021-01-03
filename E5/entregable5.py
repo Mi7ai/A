@@ -1,8 +1,10 @@
 import sys
-from typing import *
 
 
 # TODO: edit for this exercise
+import time
+
+
 def load_file():
 	data = []
 	nr_edificios = 0
@@ -25,7 +27,6 @@ def load_file2():
 		diamantes = f.readline()
 		for linea in f.readlines():
 			fila_diamante, col_diamante, valor_diamante = linea.split(" ")
-			# data.append([int(fila_diamante), int(col_diamante), int(valor_diamante)])
 			data[int(fila_diamante), int(col_diamante)] = int(valor_diamante)
 	except IOError:
 		print("File cannot be open!")
@@ -41,21 +42,19 @@ def diamante_rec2(f, c, V: dict) -> int:
 	"""
 
 	def B(f: int, c: int) -> int:
-		# --------------------
 
 		if not is_valid_square(f, c):
 			return 0
-		if is_valid_square(f, c):
-			return V[f, c] + max(B(f + 1, c), B(f, c + 1))
+		if (f, c) not in mem:
+			mem[f, c] = max(B(f + 1, c) + V[f, c], B(f, c + 1) + V[f, c])
 		if is_end_square(f, c):
 			# devuelve el valor
 			valor = V[f, c]
-			return valor
+			# return valor
+			mem[f, c] = valor
+		return mem[f, c]
 
-	# --------------------
 	mem = {}
-	suma_diamantes = 0
-	a = 0
 	return B(f, c)
 
 
@@ -92,10 +91,12 @@ def fill_dict():
 
 
 if __name__ == '__main__':
-	M, N, cantidad_diamantes, diamantes = load_file2()
+	sys.setrecursionlimit(5000)
 
+	M, N, cantidad_diamantes, diamantes = load_file2()
 	grid = fill_dict()
-	# print(grid)
-	print(diamante_rec2(0, 0, grid))
-	# print(diamante_iter(cantidad_diamantes, suma_diamantes, diamantes))
-	# print("{}, {}, {}".format(filas, columnas, diamantes))
+	fila_start, columna_start = 0, 0
+	a = time.time()
+	print(diamante_rec2(fila_start, columna_start, grid))
+	b = time.time()
+	print(b-a)
