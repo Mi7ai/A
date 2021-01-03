@@ -1,6 +1,5 @@
 import sys
 
-
 # TODO: edit for this exercise
 import time
 
@@ -42,16 +41,13 @@ def diamante_rec2(f, c, V: dict) -> int:
 	"""
 
 	def B(f: int, c: int) -> int:
-
 		if not is_valid_square(f, c):
 			return 0
 		if (f, c) not in mem:
 			mem[f, c] = max(B(f + 1, c) + V[f, c], B(f, c + 1) + V[f, c])
 		if is_end_square(f, c):
 			# devuelve el valor
-			valor = V[f, c]
-			# return valor
-			mem[f, c] = valor
+			mem[f, c] = V[f, c]
 		return mem[f, c]
 
 	mem = {}
@@ -96,7 +92,5 @@ if __name__ == '__main__':
 	M, N, cantidad_diamantes, diamantes = load_file2()
 	grid = fill_dict()
 	fila_start, columna_start = 0, 0
-	a = time.time()
+
 	print(diamante_rec2(fila_start, columna_start, grid))
-	b = time.time()
-	print(b-a)
