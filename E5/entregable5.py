@@ -1,19 +1,18 @@
 import sys
 
-# TODO: edit for this exercise
-import time
-
 
 def load_file():
-	data = []
-	nr_edificios = 0
+	data = dict()
+
 	try:
-		nr_edificios = sys.stdin.readline()
+		filas, columnas = sys.stdin.readline().split(" ")
+		diamantes = sys.stdin.readline()
 		for linea in sys.stdin.readlines():
-			data.append(int(linea))
+			fila_diamante, col_diamante, valor_diamante = linea.split(" ")
+			data[int(fila_diamante), int(col_diamante)] = int(valor_diamante)
 	except IOError:
 		print("File cannot be open!")
-	return nr_edificios, data
+	return int(filas), int(columnas), int(diamantes), data
 
 
 def load_file2():
@@ -32,7 +31,7 @@ def load_file2():
 	return int(filas), int(columnas), int(diamantes), data
 
 
-def diamante_rec2(f, c, V: dict) -> int:
+def diamante_rec(f, c, V: dict) -> int:
 	"""
 	:param M: filas matriz
 	:param N: columnas matriz
@@ -89,8 +88,8 @@ def fill_dict():
 if __name__ == '__main__':
 	sys.setrecursionlimit(5000)
 
-	M, N, cantidad_diamantes, diamantes = load_file2()
+	M, N, cantidad_diamantes, diamantes = load_file()
 	grid = fill_dict()
 	fila_start, columna_start = 0, 0
 
-	print(diamante_rec2(fila_start, columna_start, grid))
+	print(diamante_rec(fila_start, columna_start, grid))
