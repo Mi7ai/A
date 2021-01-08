@@ -33,8 +33,6 @@ def load_file2():
 
 def diamante_rec(f, c, V: dict) -> int:
 	"""
-	:param M: filas matriz
-	:param N: columnas matriz
 	:param V: matriz con valores de los diamantes o cero si la celda esta vacia
 	:return: beneficio maximo
 	"""
@@ -58,9 +56,7 @@ def is_valid_square(row, col) -> bool:
 	"""
 	:param row: fila que quiero comprobar
 	:param col: columna que quiero comprobar
-	:param M: filas matriz
-	:param N: columnas matriz
-	:return:
+	:return: el estado de si la fila, columna esta o no en la matriz
 	"""
 	if row < M and col < N:
 		return True
@@ -69,7 +65,8 @@ def is_valid_square(row, col) -> bool:
 
 # checks weather the row, col is at the end
 def is_end_square(row, col):
-	if row == M - 1 and col == N - 1: return True
+	if row == M - 1 and col == N - 1:
+		return True
 	return False
 
 
