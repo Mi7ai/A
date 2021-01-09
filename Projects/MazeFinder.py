@@ -47,7 +47,7 @@ def execute_maze(*args):
 if __name__ == '__main__':
     root = tk.Tk()
     # window width x window height + position right + position down from (0,0)
-    root.geometry("500x100+1800+100")
+    root.geometry("500x100+180+100")
     # Rows Label and Entry box
     rowsLabel = tk.Label(root, text="Labyrinth Rows")
     rowsLabel.grid(row=0, column=0)
